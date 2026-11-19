@@ -5,6 +5,7 @@
 // EchoStore is the single place to plug in a shared database later (see `remote`).
 // ═══════════════════════════════════════
 const ECHO_SEEN_KEY='theline.echoSeen.v1';
+const ECHO_VOL=.26;   // Echo listening is a quiet murmur, not the full soundscape
 const DV=[-.9,-.62,-.42,-.22,0,.25,.5,.68,.9],DA=[.85,.2,-.55,-.7,0,-.2,-.4,.3,.8];
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const EchoStore={
@@ -94,25 +95,22 @@ function startEcho(){
       core.addColorStop(0,`rgba(${b.cr},${b.cg},${b.cb},${(.9*b.va).toFixed(3)})`);
       core.addColorStop(1,`rgba(${b.pr},${b.pg},${b.pb},0)`);
       ctx.beginPath();ctx.arc(b.x,b.y,Rv*.5,0,Math.PI*2);ctx.fillStyle=core;ctx.fill();
-      if(b.mine&&b.va>.3){ctx.beginPath();ctx.arc(b.x,b.y,Rv*.72,0,Math.PI*2);ctx.strokeStyle=`rgba(61,56,48,${(.28*b.va).toFixed(3)})`;ctx.lineWidth=1.1;ctx.stroke();}
-      if(b.fresh){const k=(et%100)/100;ctx.beginPath();ctx.arc(b.x,b.y,Rv*(.8+k*1.1),0,Math.PI*2);ctx.strokeStyle=`rgba(${b.pr},${b.pg},${b.pb},${(.7*(1-k)).toFixed(3)})`;ctx.lineWidth=2;ctx.stroke();}
+      if(b.fresh){const k=.5+.5*Math.sin(et*.05);const gl=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,Rv*1.5);gl.addColorStop(0,`rgba(${b.cr},${b.cg},${b.cb},${(.55*k).toFixed(3)})`);gl.addColorStop(1,`rgba(${b.pr},${b.pg},${b.pb},0)`);ctx.beginPath();ctx.arc(b.x,b.y,Rv*1.5,0,Math.PI*2);ctx.fillStyle=gl;ctx.fill();}
     });
     if(grainBuf){ctx.globalAlpha=0.018;ctx.drawImage(grainBuf,0,0,W,H);ctx.globalAlpha=1;}
     requestAnimationFrame(frame);
   }
-  frame();if(selFreq)startSnd(selFreq);
+  frame();if(selFreq&&!soundUserOff)startSnd(selFreq,ECHO_VOL);
 }
 function openListen(blob){
   lOpenedAt=Date.now();
   listenDial=blob.n;lPlayOn=true;document.getElementById('lp-play').style.display='none';document.getElementById('lp-pause').style.display='block';
-  const who=document.getElementById('l-who'),what=document.getElementById('l-what'),line=document.getElementById('l-line');
+  const who=document.getElementById('l-who');
   if(who)who.textContent=blob.mine?'your moment':'someone · '+agoText(blob.ago||5);
-  if(what){what.textContent=blob.word;what.style.color=blob.hex;}
-  if(line)line.textContent=`line ${blob.n} · ${LD[blob.n].w}`;
   lOvRun=true;const ov=document.getElementById('listen-ov');if(!ov)return;const pf=ov.closest('.phone-frame');const W=pf?pf.offsetWidth:375,H=pf?pf.offsetHeight:812;const lovc=document.getElementById('listen-ov-cv');if(lovc){lovc.width=W;lovc.height=H;}
-  ov.style.display='flex';requestAnimationFrame(()=>ov.classList.add('show'));startLOvCanvas(blob.hex,W,H);startLWave(blob.hex);startSnd(blob.n);
+  ov.style.display='flex';requestAnimationFrame(()=>ov.classList.add('show'));startLOvCanvas(blob.hex,W,H);startLWave(blob.hex);startSnd(blob.n,ECHO_VOL);
 }
-function closeListen(){lOvRun=false;cancelAnimationFrame(lOvRAF);cancelAnimationFrame(lWaveRAF);const ov=document.getElementById('listen-ov');if(ov){ov.classList.remove('show');setTimeout(()=>ov.style.display='none',550);}if(selFreq)startSnd(selFreq);else stopSnd(2.0);}
+function closeListen(){lOvRun=false;cancelAnimationFrame(lOvRAF);cancelAnimationFrame(lWaveRAF);const ov=document.getElementById('listen-ov');if(ov){ov.classList.remove('show');setTimeout(()=>ov.style.display='none',550);}if(selFreq&&!soundUserOff)startSnd(selFreq,ECHO_VOL);else stopSnd(2.0);}
 function startLOvCanvas(hex,W,H){
   const cv=document.getElementById('listen-ov-cv');if(!cv)return;const ctx=cv.getContext('2d');
   const[rv,gv,bv]=hexToRgb(hex);
@@ -131,5 +129,5 @@ function startLOvCanvas(hex,W,H){
   draw();
 }
 function startLWave(hex){const cv=document.getElementById('l-wave');if(!cv)return;const ctx=cv.getContext('2d'),W=200,H=32;let wt=0;function f(){if(!lOvRun)return;ctx.clearRect(0,0,W,H);ctx.beginPath();ctx.strokeStyle=hex;ctx.globalAlpha=lPlayOn?.78:.28;ctx.lineWidth=1.4;for(let x=0;x<W;x++){const y=H/2+Math.sin(x*.08+wt*.07)*(lPlayOn?9:2.5);x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();ctx.globalAlpha=1;wt++;lWaveRAF=requestAnimationFrame(f);}f();}
-function toggleLPlay(){lPlayOn=!lPlayOn;document.getElementById('lp-play').style.display=lPlayOn?'none':'block';document.getElementById('lp-pause').style.display=lPlayOn?'block':'none';if(lPlayOn)startSnd(listenDial||selFreq||5);else stopSnd(.6);}
+function toggleLPlay(){lPlayOn=!lPlayOn;document.getElementById('lp-play').style.display=lPlayOn?'none':'block';document.getElementById('lp-pause').style.display=lPlayOn?'block':'none';if(lPlayOn)startSnd(listenDial||selFreq||5,ECHO_VOL);else stopSnd(.6);}
 

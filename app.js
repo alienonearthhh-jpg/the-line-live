@@ -10,7 +10,7 @@ document.getElementById('s2-play-btn').addEventListener('click',toggleS2Sound);
 document.getElementById('rec-btn').addEventListener('click',toggleRec);
 document.getElementById('s3-skip').addEventListener('click',goEcho);
 document.getElementById('s3-enter').addEventListener('click',goEcho);
-document.getElementById('s3-play-btn').addEventListener('click',()=>{if(selFreq)startSnd(liveDial||selFreq);});
+document.getElementById('s3-play-btn').addEventListener('click',toggleS3Sound);
 document.getElementById('s3-receipt').addEventListener('click',downloadReceipt);
 document.getElementById('s3-download').addEventListener('click',downloadCard);
 document.getElementById('s4-memo-btn').addEventListener('click',()=>{pausePlayer();stopSnd(1.5);buildMemoList();goTo('s5');setNav('ni-memo');});

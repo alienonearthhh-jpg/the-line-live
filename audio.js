@@ -124,7 +124,7 @@ function stopSnd(f=1.8){if(!rdy())return;_MG.gain.cancelScheduledValues(now());_
 function startSnd(n,vol=0.68){
   if(!getAC()||!rdy())return;
   const tok=++sndTok;
-  const go=()=>{if(tok!==sndTok)return;if(sndDial===n)return;const had=sndNodes.length>0;if(had)stopSnd(2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+3.5);sndNodes=nd;sndDial=n;},had?1400:80);};
+  const go=()=>{if(tok!==sndTok)return;if(sndDial===n){if(!isMuted&&_MG)_MG.gain.setTargetAtTime(vol,now(),.9);return;}const had=sndNodes.length>0;if(had)stopSnd(2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+3.5);sndNodes=nd;sndDial=n;},had?1400:80);};
   if(_AC.state==='suspended')_AC.resume().then(go).catch(()=>{});else go();
 }
 

@@ -19,6 +19,14 @@ function goS2(){
   recState='idle';clearTimeout(recTimer);document.getElementById('rec-btn').classList.remove('recording','processing');document.getElementById('rec-lbl').textContent='Record';document.getElementById('rec-status').style.opacity='0';
   const ta=document.getElementById('s2-ta');if(ta)ta.value='';lastColour=null;goTo('s2');setNav('ni-line');
 }
+let s3On=false;
+function setS3Icon(){const i=document.getElementById('s3-play-icon');if(!i)return;i.innerHTML=s3On?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>':'<polygon points="5 3 19 12 5 21 5 3"/>';}
+function toggleS3Sound(){
+  if(!selFreq)return;
+  if(s3On){soundUserOff=true;stopSnd(.8);s3On=false;barOn=false;}
+  else{soundUserOff=false;startSnd((lastColour&&lastColour.dial)||liveDial||selFreq);s3On=true;barOn=true;}
+  setS3Icon();
+}
 async function goS3(){
   if(!lastColour)await analyseJ(document.getElementById('s2-ta')?.value.trim()||'(no entry)');
   const res=lastColour,d=LD[selFreq];const ds=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});const note=document.getElementById('s2-ta')?.value.trim()||null;
@@ -32,7 +40,7 @@ async function goS3(){
   document.getElementById('s3-chip-dot').style.background=dominant.hex;document.getElementById('s3-hex').textContent=dominant.hex;document.getElementById('s3-sub').textContent=res.description||d.w;document.getElementById('s3-chip').classList.add('show');
   const leg=document.getElementById('s3-legend');if(leg){leg.innerHTML='';blobs.forEach(b=>{const li=document.createElement('div');li.className='leg-item';li.innerHTML=`<div class="leg-dot" style="background:${b.hex}"></div><span class="leg-lbl">${b.emotion} ${Math.round(b.weight*100)}%</span>`;leg.appendChild(li);});leg.classList.add('show');}
   const tgEl=document.getElementById('s3-tags');if(tgEl){tgEl.innerHTML='';(res.detected_emotions||d.tags).slice(0,5).forEach(t=>{const el=document.createElement('span');el.className='s3-tag';el.textContent=t;tgEl.appendChild(el);});tgEl.classList.add('show');}
-  buildBars('s3-bars');barHex=dominant.hex;barOn=true;runBars('s3-bars');
+  buildBars('s3-bars');barHex=dominant.hex;s3On=!soundUserOff;if(s3On&&!isMuted)startSnd(res.dial||liveDial||selFreq);barOn=s3On;setS3Icon();runBars('s3-bars');
   document.getElementById('s3-receipt')?.classList.add('show');document.getElementById('s3-download')?.classList.add('show');
   const en=document.getElementById('s3-enter');if(en){en.style.backgroundColor=dominant.hex;en.classList.add('show');}
   goTo('s3');setNav(null);

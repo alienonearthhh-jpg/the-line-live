@@ -98,7 +98,7 @@
           <div class="colour-chip" id="s3-chip"><div class="chip-dot" id="s3-chip-dot"></div><div><div class="chip-hex" id="s3-hex">#—</div><div class="chip-sub" id="s3-sub">—</div></div></div>
           <div class="s3-tags" id="s3-tags"></div>
           <div class="card" style="width:100%;margin-bottom:10px;">
-            <div class="card-top"><span style="font-size:11px;font-weight:500;color:var(--muted)">Your soundscape</span><button style="width:22px;height:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center" id="s3-play-btn"><svg id="s3-play-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.5)" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></button></div>
+            <div class="card-top"><span style="font-size:11px;font-weight:500;color:var(--muted)">Your soundscape</span><button style="width:36px;height:36px;margin:-8px -8px -8px 0;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center" id="s3-play-btn" aria-label="Play or pause soundscape"><svg id="s3-play-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.6)" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></button></div>
             <div class="bars-row" id="s3-bars"></div>
           </div>
           <button class="dl-btn fade-up" id="s3-receipt">⬇ Your receipt (.md)</button>
@@ -124,9 +124,7 @@
           <canvas id="listen-ov-cv"></canvas>
           <div class="listen-inner">
             <p class="l-who" id="l-who"></p>
-            <p class="l-what" id="l-what"></p>
-            <p class="l-line" id="l-line"></p>
-            <div class="l-play" id="l-play"><svg id="lp-play" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg><svg id="lp-pause" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
+            <div class="l-play" id="l-play"><svg id="lp-play" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg><svg id="lp-pause" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
             <canvas id="l-wave" width="200" height="32" style="width:180px;height:32px;display:block"></canvas>
             <p class="l-exit" id="l-exit">tap anywhere to close</p>
           </div>
