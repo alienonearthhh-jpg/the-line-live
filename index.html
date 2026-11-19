@@ -2,39 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EDEAE4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>The Line</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#EDEAE4;--card:#F2EFE9;--border:rgba(0,0,0,0.07);--text:#3D3830;--muted:#A09488;--accent:#C4614A;--f:'Instrument Sans',system-ui,-apple-system,sans-serif;}
-html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text);}
-.app-shell{display:flex;height:100vh;overflow:hidden;}
+html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text);overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;touch-action:manipulation;}
+:root{--dial:min(280px,calc(100vw - 56px),38vh);--dial:min(280px,calc(100vw - 56px),38dvh);--orb:min(220px,30vh);--orb:min(220px,30dvh);--sab:env(safe-area-inset-bottom,0px);--sat:env(safe-area-inset-top,0px);}
+.app-shell{display:flex;height:100vh;height:100dvh;overflow:hidden;}
 .main-panel{flex:1;display:flex;justify-content:center;overflow:hidden;background:var(--bg);}
-.phone-frame{width:100%;max-width:430px;height:100vh;position:relative;background:var(--bg);overflow:hidden;}
+.phone-frame{width:100%;max-width:430px;height:100vh;height:100dvh;position:relative;background:var(--bg);overflow:hidden;}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.4s ease;background:var(--bg);}
 .screen.active{opacity:1;pointer-events:all;}
-.nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:linear-gradient(to top,var(--bg) 70%,transparent);border-top:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-around;padding:0 16px 14px;z-index:100;}
+.nav{position:absolute;bottom:0;left:0;right:0;height:calc(72px + var(--sab));background:linear-gradient(to top,var(--bg) 70%,transparent);border-top:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-around;padding:0 16px calc(14px + var(--sab));z-index:100;}
 .nav-btn{font-size:12px;font-weight:500;color:var(--muted);padding:8px 20px;border-radius:20px;cursor:pointer;background:transparent;border:none;font-family:var(--f);transition:all 0.3s;}
 .nav-btn.active{background:var(--accent);color:#fff;}
 .nav-dark{background:rgba(8,8,8,0.95)!important;border-top-color:rgba(255,255,255,0.06)!important;}
 .nav-dark .nav-btn{color:rgba(255,255,255,0.3);}
 .nav-dark .nav-btn.active{background:var(--accent);color:#fff;}
-.hd{height:52px;padding:18px 24px 0;display:flex;align-items:center;flex-shrink:0;}
+.hd{height:calc(52px + var(--sat));padding:calc(18px + var(--sat)) 24px 0;display:flex;align-items:center;flex-shrink:0;}
 .scroller{flex:1;overflow-y:auto;scrollbar-width:none;}
 .scroller::-webkit-scrollbar{display:none;}
 .pill{height:52px;border-radius:26px;border:none;cursor:pointer;font-family:var(--f);font-size:14px;font-weight:500;width:100%;transition:background .4s,opacity .3s;}
 .pill:disabled{opacity:0.4;cursor:default;}
 .card{background:rgba(255,255,255,0.55);border:1px solid var(--border);border-radius:16px;padding:12px 14px;}
 /* S1 */
-#s1 .scroller{display:flex;flex-direction:column;align-items:center;padding:4px 24px 90px;}
+#s1 .scroller{display:flex;flex-direction:column;align-items:center;padding:4px 24px calc(90px + var(--sab));}
 .s1-sub{font-size:13px;color:var(--muted);margin-bottom:18px;text-align:center;}
-.dial-outer{position:relative;width:280px;height:280px;flex-shrink:0;}
+.dial-outer{position:relative;width:var(--dial);height:var(--dial);flex-shrink:0;}
 .dial-bezel{position:absolute;inset:0;border-radius:50%;background:#E8E4DC;box-shadow:0 8px 32px rgba(0,0,0,0.10),inset 0 2px 6px rgba(255,255,255,0.8),inset 0 -2px 6px rgba(0,0,0,0.06);}
 .dial-disc{position:absolute;inset:0;border-radius:50%;cursor:grab;user-select:none;}
 .dial-disc:active{cursor:grabbing;}
 #dial-cv{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;}
-.dial-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:96px;height:96px;border-radius:50%;background:#F5F2EC;box-shadow:0 2px 12px rgba(0,0,0,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;gap:2px;}
+.dial-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(var(--dial)*.343);height:calc(var(--dial)*.343);border-radius:50%;background:#F5F2EC;box-shadow:0 2px 12px rgba(0,0,0,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;gap:2px;}
 .hub-num{font-size:26px;font-weight:300;opacity:0.2;transition:all 0.5s;line-height:1;}
 .hub-num.lit{opacity:1;}
 .hub-word{font-size:7.5px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);opacity:0;transition:all 0.5s;}
@@ -57,14 +61,14 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 .back-btn{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--f);}
 .x-btn{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.05);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;}
 .s2-orb-section{display:flex;flex-direction:column;align-items:center;padding:8px 24px 6px;position:relative;z-index:2;}
-.orb-wrap{position:relative;width:220px;height:220px;}
-#orb-cv,#s3-orb-cv{display:block;border-radius:50%;position:absolute;inset:0;}
-#orb-grain,#s3-grain{position:absolute;inset:0;border-radius:50%;pointer-events:none;mix-blend-mode:overlay;opacity:0.04;}
+.orb-wrap{position:relative;width:var(--orb);height:var(--orb);}
+#orb-cv,#s3-orb-cv{display:block;border-radius:50%;position:absolute;inset:0;width:100%;height:100%;}
+#orb-grain,#s3-grain{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;pointer-events:none;mix-blend-mode:overlay;opacity:0.04;}
 .emo-word{font-size:18px;font-weight:400;text-align:center;margin-bottom:3px;letter-spacing:-0.01em;transition:color 2s;margin-top:8px;}
 .kw-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-height:16px;}
 .kw{font-size:10px;color:var(--muted);opacity:0;transition:opacity 0.8s;padding:2px 8px;border-radius:10px;border:1px solid rgba(0,0,0,0.07);}
 .kw.on{opacity:1;}
-.s2-controls{display:flex;flex-direction:column;gap:11px;padding:6px 20px 90px;position:relative;z-index:2;}
+.s2-controls{display:flex;flex-direction:column;gap:11px;padding:6px 20px calc(90px + var(--sab));position:relative;z-index:2;}
 .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
 .card-lbl{font-size:11px;font-weight:500;}
 .icon-btn{width:28px;height:28px;border:none;background:rgba(0,0,0,0.04);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
@@ -93,11 +97,11 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 .s3-bg{position:absolute;inset:0;}
 .s3-leak{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;mix-blend-mode:screen;z-index:1;}
 #s3 .hd{position:relative;z-index:3;}
-#s3 .scroller{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px 90px;}
+#s3 .scroller{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px calc(90px + var(--sab));}
 .s3-top{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:10px;}
 .s3-lbl{font-size:11px;color:var(--muted);letter-spacing:.04em;}
 .skip-btn{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--f);}
-.s3-orb-wrap{position:relative;width:220px;height:220px;margin-bottom:10px;}
+.s3-orb-wrap{flex-shrink:0;position:relative;width:var(--orb);height:var(--orb);margin-bottom:10px;}
 .s3-legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;opacity:0;transition:opacity .6s ease .4s;}
 .s3-legend.show{opacity:1;}
 .leg-item{display:flex;align-items:center;gap:5px;}
@@ -165,7 +169,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 #s6{background:var(--bg);}
 .s6-wash{position:absolute;inset:0;transition:background 1.2s;}
 #s6 .hd{position:relative;z-index:3;}
-#s6 .scroller{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px 90px;}
+#s6 .scroller{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px calc(90px + var(--sab));}
 .s6-top{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:12px;}
 .s6-back{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--f);display:flex;align-items:center;gap:4px;}
 .bt-pill{display:flex;align-items:center;gap:5px;padding:5px 12px 5px 9px;border-radius:100px;border:1.5px solid rgba(0,0,0,.09);background:rgba(0,0,0,.03);cursor:pointer;transition:all .4s;}
@@ -216,6 +220,24 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 /* support trigger */
 .support-hint{font-size:11px;color:var(--muted);text-align:center;}
 .support-link{background:none;border:none;font-family:var(--f);font-size:11px;color:var(--text);text-decoration:underline;cursor:pointer;padding:0;}
+/* phone fit */
+@media (max-width:480px){.ta{font-size:16px;}.phone-frame{max-width:none;}}
+@media (max-height:720px){
+  .s1-sub{margin-bottom:10px;}
+  .freq-readout{margin-top:8px;}
+  .s1-cta{padding-top:8px;}
+  .s2-orb-section{padding-top:2px;}
+  .emo-word{margin-top:4px;font-size:17px;}
+  .s2-controls{gap:8px;}
+  .ta{height:64px;}
+  .ta-wrap{padding:8px 12px;}
+  .s3-legend{margin-bottom:4px;}
+  .colour-chip{padding:7px 12px;margin-bottom:6px;}
+  .dl-btn{height:42px;}.enter-btn{height:44px;}
+}
+@media (max-height:600px){.ta{height:52px;}.bars-row{height:20px;}}
+#s2-save{position:sticky;bottom:calc(76px + var(--sab));z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.10);}
+@media (max-height:760px){:root{--orb:min(220px,25dvh);}.s2-nav{padding-top:0;}.card{padding:9px 12px;}.card-top{margin-bottom:3px;}.voice-lbl{margin-bottom:4px;}.support-hint{margin-top:6px!important;padding:8px 12px!important;}}
 /* support sheet */
 .stab{padding:7px 16px;border-radius:20px;border:1.5px solid rgba(0,0,0,0.09);background:transparent;font-family:var(--f);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;}
 .stab.active{background:var(--text);color:#fff;border-color:var(--text);}
@@ -397,7 +419,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 
 <!-- SUPPORT SHEET -->
 <div id="support-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(61,56,48,0.25);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;">
-  <div id="support-sheet" style="width:100%;max-width:430px;background:#F5F2EC;border-radius:24px 24px 0 0;padding:24px 24px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-height:90vh;overflow-y:auto;scrollbar-width:none;">
+  <div id="support-sheet" style="width:100%;max-width:430px;background:#F5F2EC;border-radius:24px 24px 0 0;padding:24px 24px calc(40px + var(--sab));transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;">
     <div style="width:36px;height:4px;border-radius:2px;background:rgba(61,56,48,0.15);margin:0 auto 20px;"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
       <h2 style="font-size:20px;font-weight:400;color:var(--text)">Talk to someone</h2>
@@ -437,39 +459,102 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 </div>
 
 <script>
-/* The Line — offline mood engine (no AI, no network).
-   Text in → dial 1–9 out, matching the real dial:
-     1 overwhelmed  2 heavy  3 tired  4 drained  5 neutral
-     6 okay  7 grounded  8 good  9 bright
-   Edit LEXICON to change any word. A trailing * means "starts with"
-   (exhaust* catches exhausted/exhausting); otherwise the whole word is matched. */
+/* The Line — offline mood engine v2 (no AI, no network).
+   Text in → for every recognised word: a dial (1–9, drives SOUND) and a
+   colour (continuous, drives VISUALS).
+
+   Colour theory — Russell's Circumplex (1980):
+     valence (unpleasant ↔ pleasant)  → HUE   blue → teal → sage → yellow-green → amber
+     arousal (deactivated ↔ activated) → SATURATION / depth (high = vivid, low = soft & washed)
+   Each word group below carries [dial, valence, arousal]. Every word therefore
+   lands on its own spot on the circumplex, so the colour range is continuous
+   instead of 9 fixed swatches.
+
+   Dial scale: 1 overwhelmed 2 heavy 3 tired 4 drained 5 neutral 6 okay 7 grounded 8 good 9 bright
+   A trailing * means "starts with" (exhaust* → exhausted/exhausting); otherwise the whole word. */
 (function (root) {
-  var LEXICON = [
-    [1, 'overwhelm*','drown*','panic*','anxi*','frantic','scatter*','chao*','spiral*','desperat*','terrif*','too much','falling apart',"can't cope",'cant cope','cannot cope','breaking down','losing it','stress*','worr*','dread*','racing','swamped','buried','suffocat*','grief','griev*','devastat*','hopeless*','despair*'],
-    [2, 'heavy','heaviness','burden*','carrying','sad*','lonel*','alone','isolat*','guilt*','hurt*','tearful','cry','crying','tears','resent*','ashamed','helpless*','missing','miss you','invisible','unseen','left out','low mood','feel low','feeling low','felt low','feel down','feeling down','felt down','feel blue','feeling blue','regret*','sorrow*','mourn*','aching','ache'],
-    [3, 'tired','tiredness','weary','exhaust*','burnt out','burned out','burnout','worn out','fatigue*','sleepy','foggy','fog','slow','sleepless','run down','drowsy','knackered'],
-    [4, 'drain*','deplet*','empty','numb*','flat','bored*','boring','routine','going through the motions','stuck','meh','apathe*','blank','running on empty','fed up','unmotivated','nothing left','dull','same old','monoton*'],
-    [5, 'neutral','steady','fine','so-so','average','normal','in between','floating','alright','unsure','uncertain','mixed','ordinary','usual','coping','whatever','just there'],
-    [6, 'okay','ok','feel present','feeling present','present moment','breathing','breathe','manag*','getting by','better','relief','relieved','gentle','easing','eased','easier','soften*','settl*','steadier','improv*','more open','feeling open'],
-    [7, 'grounded','calm*','peace*','rooted','feel clear','feeling clear','clear head','safe','stillness','rested','content*','relax*','quiet','serene','centred','centered','at peace','balanced','at ease','anchored','secure','slowed down'],
-    [8, 'good','warm*','lighter','hope*','grat*','thank*','loved','supported','connected','happy','happier','glad','kindness','proud','smil*','comfort*','optimis*','pleased','great','nice','cheerful','appreciat*','good day','blessed','lucky','looking forward','tender*','uplift*','encourag*'],
-    [9, 'bright','joy*','alive','elated','ecstatic','excit*','thrill*','amazing','energi*','radiant','wonderful','fantastic','overjoy*','buzzing','euphori*','incredible','on top of the world','unstoppable','best day','pumped','so happy','over the moon','love it','jubilant','glowing','delighted','full of life','exhilarat*']
+  // [dial, valence (-1..1), arousal (-1..1), ...words]
+  var GROUPS = [
+    // ── 1 · overwhelmed (unpleasant, high arousal) ─────────────────────────
+    [1,-.90,.90,'panic*','terrif*','petrified','horrified','frantic','hysteric*','meltdown','melting down','losing it','falling apart','breaking down',"can't cope",'cant cope','cannot cope','spiral*','desperat*','freaking out','freaked out','screaming','trembling','shaking','paralys*','paraliz*'],
+    [1,-.75,.72,'overwhelm*','swamped','drowning','buried','suffocat*','too much','frazzled','frenzied','chaotic','chaos','scattered','racing','spinning','flooded','crushing','overloaded','overload','stretched thin','at capacity','maxed out','underwater','snowed under','head is spinning','mind is racing','cant think',"can't think",'cant keep up',"can't keep up"],
+    [1,-.62,.78,'anxi*','worr*','dread*','uneasy','nervous','on edge','tense','tension','restless','jittery','panicky','apprehensive','fearful','afraid','scared','frightened','edgy','wound up','stress*','pressure','pressured','rushed','deadline','overthinking','overthink*','ruminat*','what if','sick with worry','knot in my stomach','butterflies','paranoid','insecure about'],
+    [1,-.72,.62,'angry','anger','furious','fuming','livid','rage','raging','irritat*','annoy*','frustrat*','resent*','bitter','snappy','snapping','short-tempered','mad','outraged','infuriat*','exasperat*','fed up','sick of','had enough','sick and tired','hate','hated','hating','disgust*','jealous*','envy','envious','impatient','agitated','seething','bristling'],
+    [1,-.88,.35,'grief','griev*','devastat*','heartbroken','heartbreak','shattered','crushed','hopeless*','despair*','worthless','no point',"can't go on",'give up','giving up','broken','lost hope','destroyed','gutted','inconsolable','bereaved','bereft','loss of','passed away','funeral','mourning','traumati*','trauma'],
+    // ── 2 · heavy (unpleasant, medium arousal) ─────────────────────────────
+    [2,-.62,.12,'heavy','heaviness','heavy-hearted','burden*','carrying','weighed down','weight on','sad','sadness','sadly','hurt','hurting','lonely','loneliness','alone','isolat*','guilt*','guilty','ashamed','shame','regret*','sorrow*','tearful','crying','cry','tears','weepy','missing','miss you','longing','invisible','unseen','left out','helpless*','powerless','unappreciated','taken for granted','feel down','feeling down','felt down','low mood','feel low','feeling low','felt low','feel blue','feeling blue','mourn*','aching','ache','pain','painful','sore','bruised','wounded','raw','fragile','vulnerable','exposed','tender-hearted','sensitive'],
+    [2,-.5,.32,'disappoint*','discourag*','let down','torn','conflicted','trapped','pulled apart','guilt-ridden','pessimistic','doubt*','inadequate','not enough','failing','failure','useless','incompetent','feel lost','feeling lost','felt lost','confused','confusion','anguish','tormented','miserable','gloomy','glum','downcast','dejected','low-spirited','melanchol*','wistful','homesick','nostalgic','neglected','overlooked','dismissed','ignored','rejected','abandoned','unloved','unwanted','unsupported','unheard','dismiss*','criticis*','criticiz*','judged','blamed','blame'],
+    [2,-.7,.3,'bad day','rough day','hard day','tough day','difficult day','long day','awful','terrible','horrible','dreadful','rough','tough','bleak','grim','dark','darkness','harsh','cruel','unfair','not fair','struggl*','suffering','suffer*','hardship','ordeal'],
+    // ── 3 · tired (unpleasant, low arousal) ────────────────────────────────
+    [3,-.42,-.55,'tired','tiredness','weary','exhaust*','burnt out','burned out','burnout','worn out','fatigue*','sleepy','drowsy','sleepless','insomnia','no sleep','barely slept','not sleeping','foggy','fog','sluggish','slow','run down','rundown','knackered','zonked','wiped','wiped out','dead on my feet','yawn*','groggy','lethargic','need sleep','need a nap','need rest','need a break','need a holiday','sleep deprived','up all night','night shift','early start'],
+    [3,-.3,-.78,'listless','lifeless','feel spent','feeling spent','totally spent','completely spent','sapped','dragging','dragged out','cant get up',"can't get up",'struggling to get up','no energy','low energy','zero energy','out of energy','flat battery','battery is flat','heavy limbs','lead legs','running low','empty tank'],
+    // ── 4 · drained (low-mid valence, low arousal: flat / numb / routine) ──
+    [4,-.22,-.72,'drain*','deplet*','empty','numb*','flat','blank','bored*','boring','apathe*','indifferent','unmotivated','unmoved','going through the motions','routine','monoton*','dull','stuck','stuck in a rut','rut','nothing left','running on empty','meh','detached','hollow','disconnected','distant','withdrawn','shut down','shutting down','autopilot','auto-pilot','same old','groundhog','treadmill','repetitive','grey','gray',"don't care",'dont care',"can't be bothered",'cant be bothered','cant feel',"can't feel",'nothing matters','pointless','tedious','stale','washed out','faded','muted','muffled','underwhelmed','unmotivated','lacking','neutral-ish'],
+    // ── 5 · neutral ────────────────────────────────────────────────────────
+    [5,0,0,'neutral','steady','fine','so-so','so so','average','normal','alright','all right','ordinary','usual','in between','unsure','uncertain','mixed','undecided','floating','coping','just there','not bad','middle','plain','typical','regular','mundane','unremarkable','whatever','nothing special','same as usual','as usual','as always','neither','balanced day','in the middle','between','waiting','pending','wait and see'],
+    [5,.08,.22,'busy','occupied','getting on with it','carrying on','keeping going','keeping busy','on the go','juggling','appointment','appointments','medication','meds','paperwork','errands','chores','cooking','cleaning','shopping','driving','commute','meeting','meetings','admin','schedule','scheduling','planning','organising','organizing'],
+    // ── 6 · okay (mildly pleasant, low arousal) ────────────────────────────
+    [6,.22,-.2,'okay','ok','manageable','getting by','better','relief','relieved','gentle','easing','eased','easier','soften*','settl*','steadier','improv*','recover*','healing','heal','mending','breathing','breathe','feel present','feeling present','present moment','more open','feeling open','coping better','coming through','pulling through','getting there','on the mend','a bit better','bearable','tolerable','decent','passable','hanging in','hanging on','holding on','holding up','holding steady','not too bad','could be worse','small win','small steps','baby steps','one step','one day at a time','taking it slow','slowly','gradually','making do','making it work','managing','manage'],
+    [6,.35,-.32,'rested','refreshed','restful','recharged','slept well','good sleep','cosy','cozy','comfy','comfortable','lazy','slow morning','pottering','unhurried','leisurely','easy day','light day','respite','day off','time off','nap','napping','lie in','lie-in','sleeping in','slept in','tea','cup of tea','cuppa','blanket','pyjamas','pajamas','bath','long bath','shower'],
+    // ── 7 · grounded (pleasant, low-to-medium arousal) ─────────────────────
+    [7,.5,-.42,'grounded','calm*','peace*','serene','tranquil','rooted','centred','centered','balanced','safe','secure','stillness','quiet','content*','relax*','at ease','at peace','anchored','soothed','soothing','mellow','composed','collected','unruffled','clear head','feel clear','feeling clear','clear-headed','mindful','meditat*','reflective','thoughtful','spacious','slow down','slowing down','slowed down','stable','steadfast','sturdy','whole','complete','enough','sufficient','settled in','at home','at rest','restored','restoring','breathing easy','deep breath','exhale','exhaling','release','releasing','letting go','let go','acceptance','accepting','forgiv*','nature','garden','walk in the park','sunset','sunrise','birdsong','rain on the roof','waves','ocean','sea','trees','forest','woods'],
+    // ── 8 · good (pleasant, medium arousal) ────────────────────────────────
+    [8,.68,.3,'good','warm*','hope*','grat*','thank*','loved','supported','connected','glad','kindness','proud','smil*','comfort*','optimis*','pleased','great','nice','cheerful','appreciat*','blessed','lucky','looking forward','tender*','uplift*','encourag*','happy','happier','happiness','fun','laugh*','giggl*','cuddle','cuddles','cuddling','hug','hugs','hugged','hugging','cared for','welcomed','valued','feel seen','feeling seen','felt seen','feel heard','felt heard','feel understood','accepted','belong*','togetherness','family time','good day','good news','lovely','fond','affection*','feel close','feeling close','closer to','bonding','bonded','laughter','playful','generous','generosity','sweetness','delicious','tasty','treat','treats','gift','gifts','present from','surprise','surprised me','sunny','sunshine','bloom*','flowers','spring','fresh','new beginning','new start','fresh start','turning point','silver lining','light at the end','glimmer','spark','small joys','little joys','pleasant','agreeable','satisfied','satisfying','fulfilled','fulfilling','worthwhile','meaningful','purpose','purposeful'],
+    [8,.6,.55,'motivated','inspired','confident','productive','accomplish*','achiev*','succeed*','success','progress*','proud of','capable','feel strong','feeling strong','stronger','empowered','determined','focused','energetic','driven','ready','prepared','on track','winning','win','victory','breakthrough','nailed it','crushed it','smashed it','got it done','done it','made it','finally','at last','sorted','solved','resolved','fixed','clarity','clear plan','plan is working','working out','going well','going great','went well','went great','better than expected'],
+    // ── 9 · bright (very pleasant, high arousal) ───────────────────────────
+    [9,.9,.8,'bright','joy*','alive','elated','ecstatic','excit*','thrill*','amazing','energi*','radiant','wonderful','fantastic','overjoy*','buzzing','euphori*','incredible','on top of the world','unstoppable','best day','pumped','so happy','over the moon','love it','jubilant','glowing','delighted','full of life','exhilarat*','awesome','brilliant','magical','magic','fabulous','stoked','psyched','giddy','beaming','radiating','blissful','bliss','celebrat*','dancing','dance','soaring','flying','invincible','electric','spectacular','sparkling','dazzling','vibrant','vivid','lit up','glad to be alive','on cloud nine','cloud nine','walking on air','thrilled to bits','party','partying','singing','laughing so hard','cant stop smiling',"can't stop smiling",'grinning','ear to ear','squealing','jumping','bouncing','yes yes','hell yes','woohoo','hooray','hurray','yay','best ever','of my life','dream come true','dreams coming true','pinch me','too good to be true']
   ];
 
-  var NEGATORS = ['not','no','never','hardly','without',"isn't","wasn't","don't","didn't","can't","cant","won't","aren't","isnt","wasnt","dont","didnt"];
-  var BOOSTERS = ['so','very','really','extremely','completely','totally','utterly','too','incredibly','absolutely','deeply'];
+  var NEGATORS = ['not','no','never','hardly','without',"isn't","wasn't","don't","didn't","can't","cant","won't","aren't","isnt","wasnt","dont","didnt","couldn't","wouldn't","haven't","hasn't"];
+  var BOOSTERS = ['so','very','really','extremely','completely','totally','utterly','too','incredibly','absolutely','deeply','truly','super','insanely','massively','proper'];
 
-  var ENTRIES = [];
-  LEXICON.forEach(function (row) {
-    for (var i = 1; i < row.length; i++) {
-      var w = row[i].toLowerCase(), stem = /\*$/.test(w);
+  var ENTRIES = [], seen = {};
+  GROUPS.forEach(function (g) {
+    for (var i = 3; i < g.length; i++) {
+      var w = g[i].toLowerCase(), stem = /\*$/.test(w);
       if (stem) w = w.slice(0, -1);
-      ENTRIES.push({ dial: row[0], word: w, stem: stem });
+      var k = w + (stem ? '*' : '');
+      if (seen[k]) continue;               // first group wins if a word is listed twice
+      seen[k] = 1;
+      ENTRIES.push({ dial: g[0], v: g[1], a: g[2], word: w, stem: stem });
     }
   });
   ENTRIES.sort(function (a, b) { return b.word.length - a.word.length; });
 
-  function clamp(n) { return Math.max(1, Math.min(9, n)); }
+  function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+  function dialClamp(n) { return clamp(n, 1, 9); }
+
+  // ── colour: valence → hue, arousal → saturation/depth ──────────────────
+  var HUE = [[-1, 238], [-.6, 216], [-.3, 192], [0, 152], [.25, 104], [.5, 66], [.8, 44], [1, 34]];
+  function hueAt(v) {
+    v = clamp(v, -1, 1);
+    for (var i = 1; i < HUE.length; i++) {
+      if (v <= HUE[i][0]) { var a = HUE[i - 1], b = HUE[i]; return a[1] + (b[1] - a[1]) * ((v - a[0]) / (b[0] - a[0])); }
+    }
+    return HUE[HUE.length - 1][1];
+  }
+  function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    var k = function (n) { return (n + h / 30) % 12; }, a = s * Math.min(l, 1 - l);
+    var f = function (n) { return l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); };
+    var x = function (v) { var h2 = Math.round(v * 255).toString(16); return h2.length < 2 ? '0' + h2 : h2; };
+    return '#' + x(f(0)) + x(f(8)) + x(f(4));
+  }
+  function colour(v, a) {
+    var A = (clamp(a, -1, 1) + 1) / 2, pos = Math.max(0, v);
+    var s = (16 + 42 * A) * (1 + .3 * pos) * (.55 + .45 * Math.min(1, Math.abs(v) / .4)); // neutral = muted
+    var l = 68 - 11 * A - 4 * pos;
+    return hslToHex(hueAt(v), Math.min(80, s), l);
+  }
+
+  // each word nudges its own spot on the circumplex a little, so two words from the
+  // same family (sad / lonely) still land on slightly different colours
+  function jit(w) {
+    var h = 2166136261;
+    for (var i = 0; i < w.length; i++) { h ^= w.charCodeAt(i); h = Math.imul(h, 16777619); }
+    h >>>= 0;
+    return [((h % 1000) / 1000 - .5) * .16, (((h >>> 10) % 1000) / 1000 - .5) * .26];
+  }
 
   function tokenise(text) {
     var out = [], re = /[a-z']+(?:-[a-z]+)?/g, m;
@@ -488,12 +573,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
       while ((idx = t.indexOf(w, from)) !== -1) {
         from = idx + 1;
         var e = idx + w.length;
-        if (isL(t.charAt(idx - 1))) continue;                 // must start a word
-        if (!en.stem && isL(t.charAt(e))) continue;            // exact entries end a word
+        if (isL(t.charAt(idx - 1))) continue;
+        if (!en.stem && isL(t.charAt(e))) continue;
         if (!free(idx, e)) continue;
         var end = e; while (/[a-z'-]/.test(t.charAt(end))) end++;
         used.push([idx, end]);
-        hits.push({ word: t.slice(idx, end), dial: en.dial, pos: idx, end: end });
+        hits.push({ word: t.slice(idx, end), dial: en.dial, v: en.v, a: en.a, pos: idx, end: end });
       }
     });
     hits.sort(function (a, b) { return a.pos - b.pos; });
@@ -503,9 +588,16 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
       var neg = before.some(function (w) { return NEGATORS.indexOf(w) !== -1 || /n't$/.test(w); });
       var boost = before.length && BOOSTERS.indexOf(before[before.length - 1]) !== -1;
       var d = h.dial;
-      if (neg) { d = 10 - d; d = d + (d < 5 ? 1 : d > 5 ? -1 : 0); h.negated = true; }
-      else if (boost) { d = d + (d < 5 ? -1 : d > 5 ? 1 : 0); h.boosted = true; }
-      h.dial = clamp(d);
+      if (neg) {
+        d = 10 - d; d = d + (d < 5 ? 1 : d > 5 ? -1 : 0);
+        h.v = clamp(-h.v * .85, -1, 1); h.a = clamp(h.a * .6, -1, 1); h.negated = true;
+      } else if (boost) {
+        d = d + (d < 5 ? -1 : d > 5 ? 1 : 0);
+        h.v = clamp(h.v * 1.25, -1, 1); h.a = clamp(h.a * 1.25, -1, 1); h.boosted = true;
+      }
+      h.dial = dialClamp(d);
+      var j = jit(h.word); h.v = clamp(h.v + j[0], -1, 1); h.a = clamp(h.a + j[1], -1, 1);
+      h.hex = colour(h.v, h.a);
     });
     return hits;
   }
@@ -515,10 +607,10 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
     if (!hits.length) return { dial: null, latest: null, hits: [] };
     var sum = 0, wsum = 0;
     hits.forEach(function (h, i) { var w = 1 + i * 0.6; sum += h.dial * w; wsum += w; });
-    return { dial: clamp(Math.round(sum / wsum)), latest: hits[hits.length - 1], hits: hits };
+    return { dial: dialClamp(Math.round(sum / wsum)), latest: hits[hits.length - 1], hits: hits };
   }
 
-  var api = { analyse: analyse, findHits: findHits, LEXICON: LEXICON };
+  var api = { analyse: analyse, findHits: findHits, colour: colour, GROUPS: GROUPS, wordCount: ENTRIES.length };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TheLineMood = api;
 })(typeof window !== 'undefined' ? window : this);
@@ -747,12 +839,13 @@ let orbT=0,orbRAF=null,orbBlobs=[],grainBuf=null;
 function hexToRgb(hex){return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];}
 function rgbToHex(a){return'#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');}
 function bakeGrain(W,H){const o=document.createElement('canvas');o.width=W;o.height=H;const ctx=o.getContext('2d');const img=ctx.createImageData(W,H);for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255;img.data[i]=v;img.data[i+1]=v;img.data[i+2]=v;img.data[i+3]=255;}ctx.putImageData(img,0,0);grainBuf=o;}
-function initOrb(bd){const W=220,cx=W/2,cy=W/2;const total=bd.reduce((s,b)=>s+b.weight,0)||1;orbBlobs=bd.map((b,i)=>({...b,weight:b.weight/total,cur:hexToRgb(b.hex),tgt:null,x:cx+(Math.random()-.5)*40,y:cy+(Math.random()-.5)*40,phase:(i/bd.length)*Math.PI*2,speed:.006+Math.random()*.004,orbitR:18+Math.random()*28,baseR:52+b.weight*60}));if(!grainBuf)bakeGrain(220,220);if(!orbRAF)animOrbLoop();}
+function initOrb(bd){const W=220,cx=W/2,cy=W/2;const total=bd.reduce((s,b)=>s+b.weight,0)||1;orbBlobs=bd.map((b,i)=>({...b,weight:b.weight/total,cur:hexToRgb(b.hex),tgt:null,x:cx+(Math.random()-.5)*40,y:cy+(Math.random()-.5)*40,phase:(i/bd.length)*Math.PI*2,speed:.006+Math.random()*.004,orbitR:22+Math.random()*16+i*3,baseR:48+b.weight*78}));if(!grainBuf)bakeGrain(220,220);if(!orbRAF)animOrbLoop();}
+function ow(b){return Math.min(1,.32+b.weight*1.35);}
 function drawOrbFrame(cvId,grainId,W,blobs,t){
-  const cv=document.getElementById(cvId);if(!cv)return;const ctx=cv.getContext('2d'),cx=W/2,cy=W/2;ctx.clearRect(0,0,W,W);
-  blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const h=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,W*.52);h.addColorStop(0,`rgba(${r},${g},${bl},${(.10*b.weight).toFixed(3)})`);h.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.beginPath();ctx.arc(b.x,b.y,W*.52,0,Math.PI*2);ctx.fillStyle=h;ctx.fill();});
-  for(let pass=0;pass<3;pass++){blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const jx=b.x+Math.sin(t*.009+b.phase+pass)*3,jy=b.y+Math.cos(t*.007+b.phase+pass)*3;const R=b.baseR*(1+Math.sin(t*b.speed+b.phase)*.08)*(0.8+pass*.15);const bloom=ctx.createRadialGradient(jx-R*.15,jy-R*.18,0,jx,jy,R);bloom.addColorStop(0,`rgba(${Math.min(255,r+35)},${Math.min(255,g+30)},${Math.min(255,bl+25)},${(.55*b.weight/(pass+1)).toFixed(3)})`);bloom.addColorStop(.45,`rgba(${r},${g},${bl},${(.30*b.weight/(pass+1)).toFixed(3)})`);bloom.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.globalCompositeOperation='source-over';ctx.beginPath();ctx.arc(jx,jy,R,0,Math.PI*2);ctx.fillStyle=bloom;ctx.fill();});}
-  ctx.globalCompositeOperation='color-dodge';blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const dx=b.x+Math.sin(t*.011+b.phase)*5,dy=b.y+Math.cos(t*.009+b.phase)*5;const R=b.baseR*.55*(1+Math.sin(t*b.speed+b.phase+1)*.06);const core=ctx.createRadialGradient(dx-R*.1,dy-R*.12,0,dx,dy,R);core.addColorStop(0,`rgba(${Math.min(255,r+80)},${Math.min(255,g+70)},${Math.min(255,bl+60)},${(.45*b.weight).toFixed(3)})`);core.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.beginPath();ctx.arc(dx,dy,R,0,Math.PI*2);ctx.fillStyle=core;ctx.fill();});
+  const cv=document.getElementById(cvId);if(!cv)return;const ctx=cv.getContext('2d'),cx=W/2,cy=W/2;ctx.clearRect(0,0,W,W);blobs=blobs.slice().reverse(); /* oldest first, newest colour sits on top */
+  blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const h=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,W*.52);h.addColorStop(0,`rgba(${r},${g},${bl},${(.10*ow(b)).toFixed(3)})`);h.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.beginPath();ctx.arc(b.x,b.y,W*.52,0,Math.PI*2);ctx.fillStyle=h;ctx.fill();});
+  for(let pass=0;pass<3;pass++){blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const jx=b.x+Math.sin(t*.009+b.phase+pass)*3,jy=b.y+Math.cos(t*.007+b.phase+pass)*3;const R=b.baseR*(1+Math.sin(t*b.speed+b.phase)*.08)*(0.8+pass*.15);const bloom=ctx.createRadialGradient(jx-R*.15,jy-R*.18,0,jx,jy,R);bloom.addColorStop(0,`rgba(${Math.min(255,r+35)},${Math.min(255,g+30)},${Math.min(255,bl+25)},${(.55*ow(b)/(pass+1)).toFixed(3)})`);bloom.addColorStop(.45,`rgba(${r},${g},${bl},${(.30*ow(b)/(pass+1)).toFixed(3)})`);bloom.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.globalCompositeOperation='source-over';ctx.beginPath();ctx.arc(jx,jy,R,0,Math.PI*2);ctx.fillStyle=bloom;ctx.fill();});}
+  ctx.globalCompositeOperation='color-dodge';blobs.forEach(b=>{const[r,g,bl]=hexToRgb(b.hex);const dx=b.x+Math.sin(t*.011+b.phase)*5,dy=b.y+Math.cos(t*.009+b.phase)*5;const R=b.baseR*.55*(1+Math.sin(t*b.speed+b.phase+1)*.06);const core=ctx.createRadialGradient(dx-R*.1,dy-R*.12,0,dx,dy,R);core.addColorStop(0,`rgba(${Math.min(255,r+80)},${Math.min(255,g+70)},${Math.min(255,bl+60)},${(.45*ow(b)).toFixed(3)})`);core.addColorStop(1,`rgba(${r},${g},${bl},0)`);ctx.beginPath();ctx.arc(dx,dy,R,0,Math.PI*2);ctx.fillStyle=core;ctx.fill();});
   ctx.globalCompositeOperation='destination-in';ctx.beginPath();ctx.arc(cx,cy,W/2-1,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();ctx.globalCompositeOperation='source-over';
   if(grainBuf){const gcv=document.getElementById(grainId);if(gcv){const gctx=gcv.getContext('2d');gctx.clearRect(0,0,W,W);const angle=t*.004,radius=18,sx=Math.cos(angle)*radius,sy=Math.sin(angle)*radius;const bx=-(((sx%W)+W)%W),by=-(((sy%W)+W)%W);gctx.drawImage(grainBuf,bx,by);gctx.drawImage(grainBuf,bx+W,by);gctx.drawImage(grainBuf,bx,by+W);gctx.drawImage(grainBuf,bx+W,by+W);gctx.globalCompositeOperation='destination-in';gctx.beginPath();gctx.arc(W/2,W/2,W/2-1,0,Math.PI*2);gctx.fillStyle='#000';gctx.fill();gctx.globalCompositeOperation='source-over';}}
 }
@@ -761,7 +854,7 @@ function tickBlobs(t){const W=220,cx=W/2,cy=W/2;orbBlobs.forEach(b=>{
   if(b.tgt){b.cur=b.cur.map((v,k)=>v+(b.tgt[k]-v)*.035);b.hex=rgbToHex(b.cur);if(b.tw!=null)b.weight+=(b.tw-b.weight)*.035;}
   b.x=cx+Math.sin(t*b.speed+b.phase)*b.orbitR+Math.sin(t*b.speed*.3+b.phase*1.7)*b.orbitR*.4;b.y=cy+Math.cos(t*b.speed+b.phase)*b.orbitR*.7+Math.cos(t*b.speed*.25+b.phase*2.1)*b.orbitR*.3;});}
 function animOrbLoop(){orbT++;tickBlobs(orbT);drawOrbFrame('orb-cv','orb-grain',220,orbBlobs,orbT);drawOrbFrame('s3-orb-cv','s3-grain',220,orbBlobs,orbT);orbRAF=requestAnimationFrame(animOrbLoop);}
-function drawLeak(cvId,leakRgb,opacity){const cv=document.getElementById(cvId);if(!cv)return;const pf=cv.parentElement;const W=pf?pf.offsetWidth||375:375,H=pf?pf.offsetHeight||812:812;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.clearRect(0,0,W,H);const{r,g,b}=leakRgb;const g1=ctx.createRadialGradient(0,0,0,0,0,W*.9);g1.addColorStop(0,`rgba(${r},${g},${b},0.35)`);g1.addColorStop(1,`rgba(${r},${g},${b},0)`);ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);const g2=ctx.createRadialGradient(W,H,0,W,H,W*.7);g2.addColorStop(0,`rgba(${r},${g},${b},0.18)`);g2.addColorStop(1,`rgba(${r},${g},${b},0)`);ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);cv.style.opacity=opacity;}
+function drawLeak(cvId,leakRgb,opacity,rgb2){const cv=document.getElementById(cvId);if(!cv)return;const pf=cv.parentElement;const W=pf?pf.offsetWidth||375:375,H=pf?pf.offsetHeight||812:812;if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const ctx=cv.getContext('2d');ctx.clearRect(0,0,W,H);const{r,g,b}=leakRgb;const c2=rgb2||leakRgb;const g1=ctx.createRadialGradient(0,0,0,0,0,W*.95);g1.addColorStop(0,`rgba(${r},${g},${b},0.38)`);g1.addColorStop(1,`rgba(${r},${g},${b},0)`);ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);const g2=ctx.createRadialGradient(W,H,0,W,H,W*.85);g2.addColorStop(0,`rgba(${c2.r},${c2.g},${c2.b},0.26)`);g2.addColorStop(1,`rgba(${c2.r},${c2.g},${c2.b},0)`);ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);if(opacity!=null)cv.style.opacity=opacity;}
 
 // ═══════════════════════════════════════
 // BARS
@@ -772,7 +865,7 @@ function buildBars(id){const c=document.getElementById(id);if(!c)return;c.innerH
 function animBars(id){const bars=document.querySelectorAll(`#${id} .bar`);barT+=.06;bars.forEach((b,i)=>{const base=parseInt(b.dataset.h)||5,wave=barOn?Math.sin(barT+i*.3)*base*.4:0;b.style.height=Math.max(3,base+wave)+'px';b.style.background=barOn?barHex:'rgba(0,0,0,0.11)';});}
 function runBars(id){if(barRAF)return;function f(){animBars(id);barRAF=requestAnimationFrame(f);}f();}
 function stopBars(id){cancelAnimationFrame(barRAF);barRAF=null;barOn=false;document.querySelectorAll(`#${id} .bar`).forEach(b=>{b.style.height=b.dataset.h+'px';b.style.background='rgba(0,0,0,0.11)';});}
-function toggleS2Sound(){if(!selFreq)return;const icon=document.getElementById('s2-play-icon');if(s2SndOn){soundUserOff=true;stopSnd(.8);s2SndOn=false;barOn=false;stopBars('s2-bars');if(icon){icon.innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';icon.setAttribute('stroke','rgba(61,56,48,0.6)');}}else{soundUserOff=false;startSnd(liveDial||selFreq);s2SndOn=true;barOn=true;barHex=LD[liveDial||selFreq]?.col||'#C2B89A';runBars('s2-bars');if(icon){icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';icon.setAttribute('stroke',barHex);}}}
+function toggleS2Sound(){if(!selFreq)return;const icon=document.getElementById('s2-play-icon');if(s2SndOn){soundUserOff=true;stopSnd(.8);s2SndOn=false;barOn=false;stopBars('s2-bars');if(icon){icon.innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';icon.setAttribute('stroke','rgba(61,56,48,0.6)');}}else{soundUserOff=false;startSnd(liveDial||selFreq);s2SndOn=true;barOn=true;barHex=(lastColour&&lastColour.latest&&lastColour.hex)||LD[liveDial||selFreq]?.col||'#C2B89A';runBars('s2-bars');if(icon){icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';icon.setAttribute('stroke',barHex);}}}
 
 // ═══════════════════════════════════════
 // LIVE KEYWORD → DIAL (offline, no AI, no network)
@@ -780,36 +873,54 @@ function toggleS2Sound(){if(!selFreq)return;const icon=document.getElementById('
 // and a soundscape (SCAPES). The LATEST word sets the colour + sound.
 // ═══════════════════════════════════════
 let lastColour=null,jTimer=null,liveDial=null,liveKey='',sndT=null,readT=null;
+const LW=[.40,.24,.16,.12,.08];            // layer weights, newest first (opacity of each overlapping blob)
+const cdist=(a,b)=>{const p=hexToRgb(a),q=hexToRgb(b);return Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2]);};
+const rgbObj=hex=>{const[r,g,b]=hexToRgb(hex);return{r,g,b};};
 function buildColour(text){
   const hits=TheLineMood.findHits(text||'');
-  const fallback=liveDial||selFreq||5;
-  if(!hits.length){const d=LD[fallback];return{dial:fallback,dominant_word:d.w,dominant_hex:d.col,blobs:[{emotion:d.w,hex:d.col,weight:1}],orb:[0,1,2].map(()=>({emotion:d.w,hex:d.col,weight:1})),detected_emotions:d.tags,description:QUAD[fallback],latest:null};}
+  const fallback=liveDial||selFreq||5,base=LD[fallback].col;
+  if(!hits.length){const d=LD[fallback];return{dial:fallback,dominant_word:d.w,dominant_hex:d.col,hex:d.col,hex2:d.col,blobs:[{emotion:d.w,hex:d.col,weight:1}],orb:LW.map(w=>({emotion:d.w,hex:d.col,weight:w})),chips:[],detected_emotions:d.tags,description:QUAD[fallback],latest:null};}
   const latest=hits[hits.length-1];
-  // merged result colours: recency-weighted, latest dial first
-  const w={};hits.forEach((h,i)=>{w[h.dial]=(w[h.dial]||0)+(1+i*.6)*(h===latest?1.5:1);});
-  const order=Object.keys(w).map(Number).sort((a,b)=>(b===latest.dial)-(a===latest.dial)||w[b]-w[a]).slice(0,4);
-  const tot=order.reduce((s,n)=>s+w[n],0);
-  const blobs=order.map(n=>({emotion:LD[n].w,hex:LD[n].col,weight:w[n]/tot}));
-  // orb slots: always 3 blobs (newest distinct dials) so shifts glide
-  const recent=[];for(let i=hits.length-1;i>=0;i--){if(!recent.includes(hits[i].dial))recent.push(hits[i].dial);}
-  const slots=[recent[0],recent[1]??recent[0],recent[2]??recent[0]];
-  const ow=[.6,.28,.12];
-  const orb=slots.map((n,i)=>({emotion:LD[n].w,hex:LD[n].col,weight:ow[i]}));
-  const seen=[];for(let i=hits.length-1;i>=0;i--){const t=hits[i].word;if(!seen.includes(t))seen.push(t);}
-  return{dial:latest.dial,dominant_word:LD[latest.dial].w,dominant_hex:LD[latest.dial].col,blobs,orb,detected_emotions:seen.slice(0,5),description:QUAD[latest.dial],latest,key:latest.pos+':'+latest.word+':'+latest.dial};
+  // layers = the newest distinct keyword colours, newest first (a new keyword pushes the others back)
+  const layers=[];
+  for(let i=hits.length-1;i>=0&&layers.length<5;i--){const h=hits[i];if(layers.every(l=>cdist(l.hex,h.hex)>9))layers.push(h);}
+  const baseHex=LD[selFreq||fallback].col;
+  const orb=LW.map((w,i)=>layers[i]?{emotion:layers[i].word,hex:layers[i].hex,weight:w}:{emotion:'·',hex:baseHex,weight:w*.45});
+  const rw=[.4,.28,.2,.12];const rs=layers.slice(0,4);const rt=rw.slice(0,rs.length).reduce((a,b)=>a+b,0);
+  const blobs=rs.map((h,i)=>({emotion:h.word,hex:h.hex,weight:rw[i]/rt}));
+  const chips=[];for(let i=layers.length-1,n=0;i>=0&&n<5;i--,n++)chips.push({w:layers[i].word,hex:layers[i].hex});chips.reverse();
+  return{dial:latest.dial,dominant_word:latest.word,dominant_hex:latest.hex,hex:latest.hex,hex2:(layers[1]||{hex:baseHex}).hex,blobs,orb,chips,detected_emotions:layers.map(h=>h.word),description:QUAD[latest.dial],latest,key:latest.pos+':'+latest.word+':'+latest.dial};
+}
+// ── tint: background wash, leak, save button glide between keyword colours
+let tint={cur:[[196,184,154],[196,184,154]],tgt:null,raf:null};
+function applyTint(){
+  const a=rgbToHex(tint.cur[0]),b=rgbToHex(tint.cur[1]);
+  const bg=document.getElementById('s2-bg');if(bg)bg.style.background=`radial-gradient(ellipse at 50% 0%,${a}30 0%,transparent 58%),radial-gradient(ellipse at 10% 100%,${b}22 0%,transparent 55%)`;
+  const sv=document.getElementById('s2-save');if(sv)sv.style.backgroundColor=a;
+  const o=cvOpacity();drawLeak('s2-leak',{r:Math.round(tint.cur[0][0]),g:Math.round(tint.cur[0][1]),b:Math.round(tint.cur[0][2])},o,{r:Math.round(tint.cur[1][0]),g:Math.round(tint.cur[1][1]),b:Math.round(tint.cur[1][2])});
+}
+function cvOpacity(){return .5;}
+function setTint(h0,h1,jump){
+  tint.tgt=[hexToRgb(h0),hexToRgb(h1)];
+  if(jump){tint.cur=tint.tgt.map(c=>c.slice());tint.tgt=null;applyTint();return;}
+  if(!tint.raf)tint.raf=requestAnimationFrame(tintTick);
+}
+function tintTick(){
+  tint.raf=null;if(!tint.tgt)return;let md=0;
+  tint.cur=tint.cur.map((c,i)=>c.map((v,k)=>{const t=tint.tgt[i][k];md=Math.max(md,Math.abs(t-v));return v+(t-v)*.07;}));
+  applyTint();
+  if(md>.8)tint.raf=requestAnimationFrame(tintTick);else{tint.cur=tint.tgt;tint.tgt=null;applyTint();}
 }
 function paintLive(res){
-  const d=LD[res.dial],hex=d.col;
+  const d=LD[res.dial],hex=res.hex;
   applyBlobs(res.orb);
-  const ew=document.getElementById('s2-emo');if(ew){ew.textContent=d.w;ew.style.color=hex;}
+  const ew=document.getElementById('s2-emo');if(ew){ew.textContent=res.latest?res.latest.word:d.w;ew.style.color=hex;}
   const ll=document.getElementById('s2-lnum');if(ll){ll.textContent=res.dial===selFreq?`line ${selFreq}`:`line ${selFreq} → ${res.dial}`;ll.style.color=hex;}
-  setKWs('s2-kws',res.detected_emotions,hex);
-  const bg=document.getElementById('s2-bg');if(bg)bg.style.background=`radial-gradient(ellipse at 50% 0%,${hex}18 0%,transparent 55%)`;
-  const sv=document.getElementById('s2-save');if(sv)sv.style.backgroundColor=hex;
+  setKWs('s2-kws',res.chips&&res.chips.length?res.chips:res.detected_emotions,hex);
+  setTint(hex,res.hex2);
   if(barOn)barHex=hex;
-  drawLeak('s2-leak',d.leak,.45);
   const bp=document.getElementById('s2-bpm');if(bp)bp.textContent=`${BPM[res.dial-1]||70} BPM`;
-  // sound follows the colour (debounced so fast typing doesn't thrash the audio)
+  // sound follows the dial (debounced so fast typing doesn't thrash the audio)
   clearTimeout(sndT);if(!soundUserOff)sndT=setTimeout(()=>startSnd(res.dial),450);
 }
 async function analyseJ(text){
@@ -822,7 +933,7 @@ function applyBlobs(bd){
   if(orbBlobs.length&&orbBlobs.length===nb.length){orbBlobs.forEach((b,i)=>{b.tgt=hexToRgb(nb[i].hex);b.tw=nb[i].weight;b.emotion=nb[i].emotion;});if(!orbRAF)animOrbLoop();}
   else initOrb(nb);
 }
-function setKWs(id,words,hex){const r=document.getElementById(id);if(!r)return;r.innerHTML='';(words||[]).slice(0,5).forEach((w,i)=>{const el=document.createElement('span');el.className='kw';el.textContent=w;el.style.color=hex||'var(--muted)';r.appendChild(el);setTimeout(()=>el.classList.add('on'),i*90+180);});}
+function setKWs(id,words,hex){const r=document.getElementById(id);if(!r)return;r.innerHTML='';(words||[]).slice(0,5).forEach((w,i)=>{const el=document.createElement('span');el.className='kw';const o=typeof w==='object';el.textContent=o?w.w:w;el.style.color=o?w.hex:(hex||'var(--muted)');if(o)el.style.borderColor=w.hex+'66';r.appendChild(el);setTimeout(()=>el.classList.add('on'),i*90+180);});}
 function onJInput(){
   const ta=document.getElementById('s2-ta');if(!ta)return;
   const sv=document.getElementById('s2-save');if(sv)sv.disabled=ta.value.trim().length===0;
@@ -849,10 +960,10 @@ function navTo(d){if(d==='line'){goTo('s1');setNav('ni-line');pausePlayer();}els
 function goS2(){
   if(!selFreq)return;const d=LD[selFreq],hex=d.col;
   const ll=document.getElementById('s2-lnum');if(ll){ll.textContent=`line ${selFreq}`;ll.style.color=hex;}
-  bakeGrain(220,220);applyBlobs([0,1,2].map(i=>({hex,weight:[.6,.28,.12][i],emotion:d.w})));drawLeak('s2-leak',d.leak,.38);
+  bakeGrain(220,220);applyBlobs(LW.map(w=>({hex,weight:w,emotion:d.w})));setTint(hex,hex,true);
   const ew=document.getElementById('s2-emo');if(ew){ew.textContent=d.w;ew.style.color=hex;}
-  setKWs('s2-kws',d.tags,hex);document.getElementById('s2-bg').style.background=`radial-gradient(ellipse at 50% 0%,${hex}18 0%,transparent 55%)`;
-  const sv=document.getElementById('s2-save');if(sv){sv.style.backgroundColor=hex;sv.disabled=true;}
+  setKWs('s2-kws',d.tags,hex);
+  const sv=document.getElementById('s2-save');if(sv){sv.disabled=true;}
   buildBars('s2-bars');document.getElementById('s2-bpm').textContent=`${BPM[selFreq-1]||70} BPM`;
   if(s2SndOn){stopSnd(.5);s2SndOn=false;stopBars('s2-bars');}
   soundUserOff=false;liveDial=null;liveKey='';clearTimeout(sndT);
@@ -868,7 +979,7 @@ async function goS3(){
   userMemos.unshift(entry);memoData.unshift(entry);saveMemos();
   document.getElementById('s3-bg').style.background=`radial-gradient(ellipse at 50% 20%,${dominant.hex}20 0%,transparent 60%)`;
   document.getElementById('s3-lnum').textContent=`line ${selFreq} · ${d.w}`;document.getElementById('s3-lnum').style.color=dominant.hex;
-  document.getElementById('s3-lbl').textContent=`line ${selFreq}`;drawLeak('s3-leak',d.leak,.42);
+  document.getElementById('s3-lbl').textContent=`line ${selFreq}`;drawLeak('s3-leak',rgbObj(dominant.hex),.42,rgbObj((blobs[1]||dominant).hex));
   const lkl=document.getElementById('s3-leak-lbl');if(lkl){lkl.textContent=d.leakName;lkl.classList.add('show');}
   document.getElementById('s3-chip-dot').style.background=dominant.hex;document.getElementById('s3-hex').textContent=dominant.hex;document.getElementById('s3-sub').textContent=res.description||d.w;document.getElementById('s3-chip').classList.add('show');
   const leg=document.getElementById('s3-legend');if(leg){leg.innerHTML='';blobs.forEach(b=>{const li=document.createElement('div');li.className='leg-item';li.innerHTML=`<div class="leg-dot" style="background:${b.hex}"></div><span class="leg-lbl">${b.emotion} ${Math.round(b.weight*100)}%</span>`;leg.appendChild(li);});leg.classList.add('show');}
