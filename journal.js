@@ -114,7 +114,41 @@ function onJInput(){
 // ═══════════════════════════════════════
 // RECORD
 // ═══════════════════════════════════════
-let recState='idle',recTimer=null;
-function toggleRec(){const btn=document.getElementById('rec-btn'),lbl=document.getElementById('rec-lbl'),st=document.getElementById('rec-status');if(recState==='idle'){recState='recording';btn.classList.add('recording');lbl.textContent='Recording…';st.textContent='● tap to stop';st.style.opacity='1';recTimer=setTimeout(stopRec,30000);}else if(recState==='recording')stopRec();}
-function stopRec(){clearTimeout(recTimer);const btn=document.getElementById('rec-btn'),lbl=document.getElementById('rec-lbl'),st=document.getElementById('rec-status');recState='processing';btn.classList.remove('recording');lbl.textContent='Processing…';setTimeout(()=>{recState='idle';btn.classList.remove('processing');lbl.textContent='Record again';st.textContent='voice captured';setTimeout(()=>{if(st)st.style.opacity='0';if(lbl)lbl.textContent='Record';},3000);},1800);}
+let recState='idle',recTimer=null,recog=null,recBase='',recWant=false;
+const SpeechRec=window.SpeechRecognition||window.webkitSpeechRecognition;
+function recUI(state,msg){
+  const btn=document.getElementById('rec-btn'),lbl=document.getElementById('rec-lbl'),st=document.getElementById('rec-status');if(!btn)return;
+  btn.classList.toggle('recording',state==='recording');btn.classList.remove('processing');
+  if(lbl)lbl.textContent=state==='recording'?'Listening…':state==='done'?'Record again':'Record';
+  if(st&&msg!=null){st.textContent=msg;st.style.opacity=msg?'1':'0';}
+}
+// Voice → text (browser speech recognition). Words land in the text box as you speak,
+// so the colour + sound react live exactly like typing.
+function toggleRec(){if(recState==='recording')stopVoice();else startVoice();}
+function startVoice(){
+  if(!SpeechRec){recUI('idle',"voice typing isn't supported in this browser · try Chrome or Safari, or just type");return;}
+  const ta=document.getElementById('s2-ta');if(!ta)return;
+  recWant=true;recState='recording';recUI('recording','● listening · tap to stop');
+  clearTimeout(recTimer);recTimer=setTimeout(()=>stopVoice(),120000);
+  function begin(){
+    const t=ta.value.trim();recBase=t?t+' ':'';
+    let r;try{r=new SpeechRec();}catch(e){recWant=false;recState='idle';recUI('idle','voice typing is not available here');return;}
+    recog=r;r.lang=navigator.language||'en-AU';r.continuous=true;r.interimResults=true;
+    r.onresult=e=>{let fin='',interim='';for(let i=0;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else interim+=tr;}
+      ta.value=(recBase+fin+interim).replace(/\s{2,}/g,' ');ta.scrollTop=ta.scrollHeight;ta.dispatchEvent(new Event('input'));};
+    r.onerror=e=>{
+      if(e.error==='not-allowed'||e.error==='service-not-allowed'){recWant=false;recState='idle';recUI('idle','microphone is blocked · allow it in your browser settings, or type');}
+      else if(e.error==='network'){recWant=false;recState='idle';recUI('idle','voice typing needs an internet connection');}
+    };
+    r.onend=()=>{if(recWant&&recog===r){try{begin();}catch(x){recWant=false;recState='idle';recUI('done','voice captured');}}};   // browsers stop after a pause: keep listening
+    try{r.start();}catch(e){recWant=false;recState='idle';recUI('idle','could not start the microphone');}
+  }
+  begin();
+}
+function stopVoice(silent){
+  recWant=false;clearTimeout(recTimer);
+  const r=recog;recog=null;if(r){try{r.stop();}catch(e){}}
+  const was=recState==='recording';recState='idle';
+  if(silent)recUI('idle','');else if(was){recUI('done','voice captured');setTimeout(()=>{if(recState==='idle')recUI('idle','');},3000);}
+}
 

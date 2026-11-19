@@ -16,7 +16,7 @@ function goS2(){
   if(s2SndOn){stopSnd(.5);s2SndOn=false;stopBars('s2-bars');}
   soundUserOff=false;liveDial=null;liveKey='';clearTimeout(sndT);
   document.getElementById('s2-play-icon').innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';
-  recState='idle';clearTimeout(recTimer);document.getElementById('rec-btn').classList.remove('recording','processing');document.getElementById('rec-lbl').textContent='Record';document.getElementById('rec-status').style.opacity='0';
+  stopVoice(true);recState='idle';clearTimeout(recTimer);document.getElementById('rec-btn').classList.remove('recording','processing');document.getElementById('rec-lbl').textContent='Record';document.getElementById('rec-status').style.opacity='0';
   const ta=document.getElementById('s2-ta');if(ta)ta.value='';lastColour=null;goTo('s2');setNav('ni-line');
 }
 let s3On=false;
@@ -28,6 +28,7 @@ function toggleS3Sound(){
   setS3Icon();
 }
 async function goS3(){
+  stopVoice(true);
   if(!lastColour)await analyseJ(document.getElementById('s2-ta')?.value.trim()||'(no entry)');
   const res=lastColour,d=LD[selFreq];const ds=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});const note=document.getElementById('s2-ta')?.value.trim()||null;
   const blobs=res.blobs||[{emotion:res.dominant_word,hex:res.dominant_hex,weight:1}];const dominant=blobs[0];
