@@ -3,7 +3,7 @@
 // AUDIO ENGINE
 // ═══════════════════════════════════════
 let _AC=null,_MG=null,sndNodes=[],sndDial=null,isMuted=false,sndTok=0;
-function getAC(){if(_AC)return _AC;try{_AC=new(window.AudioContext||window.webkitAudioContext)();_MG=_AC.createGain();_MG.gain.value=0;_MG.connect(_AC.destination);}catch(e){_AC=null;_MG=null;}return _AC;}
+function getAC(){if(_AC)return _AC;try{_AC=new(window.AudioContext||window.webkitAudioContext)();_MG=_AC.createGain();_MG.gain.value=0;const lp=_AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=.4;_MG.connect(lp);lp.connect(_AC.destination);}catch(e){_AC=null;_MG=null;}return _AC;}
 function rdy(){return _AC&&_MG&&_AC.state!=='closed';}
 function now(){return _AC?_AC.currentTime:0;}
 function mkRev(dur,dec){if(!rdy())return null;const len=_AC.sampleRate*dur,buf=_AC.createBuffer(2,len,_AC.sampleRate);for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,dec);}const cv=_AC.createConvolver();cv.buffer=buf;return cv;}
@@ -24,7 +24,7 @@ function pad(root,intervals,amps,lfoRates,nd,rev){
   });
 }
 function sparsePartial(freq,amp,imin,imax,nd,rev){
-  if(!rdy())return;let stopped=false,next=now()+1+Math.random()*imin;
+  if(!rdy())return;imin*=1.7;imax*=1.7;amp*=.75;let stopped=false,next=now()+1+Math.random()*imin;
   function ring(){if(stopped||!rdy())return;const t=Math.max(next,now()+.1);const o=_AC.createOscillator(),g=_AC.createGain();o.type='sine';o.frequency.value=freq*(1+Math.random()*.015-.0075);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+3+Math.random()*4);o.connect(g);if(rev)try{g.connect(rev);}catch(e){}g.connect(_MG);o.start(t);o.stop(t+8);next=t+imin+Math.random()*(imax-imin);setTimeout(ring,Math.max(400,(next-now())*1000-200));}
   ring();nd.push({stop:()=>{stopped=true;}});
 }
@@ -60,16 +60,16 @@ const SCAPES={
 // Same logic as the dial: tempo follows BPM[], low dials = minor, slow, dark,
 // sparse; high dials = major, quicker, brighter, denser.
 const LIFE_SCALE={1:[1,1.2,1.5,1.8],2:[1,1.2,1.333,1.5,1.8],3:[1,1.2,1.333,1.5,1.8],4:[1,1.125,1.333,1.5,1.778],5:[1,1.125,1.5,1.667],6:[1,1.125,1.25,1.5,1.667],7:[1,1.125,1.25,1.5,1.667,2],8:[1,1.125,1.25,1.5,1.667,1.875],9:[1,1.125,1.25,1.5,1.667,1.875,2]};
-const LIFE_BEATS=[2,2,1.5,1.5,1,1,.75,.5,.5];                 // step length in beats
-const LIFE_PROB=[.30,.34,.38,.42,.48,.55,.62,.70,.78];        // chance a step plays a note
-const LIFE_OCT=[[2,4],[2,4],[2,4],[2,4],[4,4],[4,8],[4,8],[4,8],[4,8]]; // octave multiplier pool
+const LIFE_BEATS=[4,4,4,3.5,3.5,3,3,3,2.5];                   // step length in beats (slow)
+const LIFE_PROB=[.20,.22,.24,.26,.28,.30,.32,.34,.36];        // chance a step plays a note (sparse)
+const LIFE_OCT=[[2],[2],[2,4],[2,4],[2,4],[2,4],[2,4],[2,4],[2,4]]; // octave multiplier pool (low, warm)
 function lifePluck(freq,t,amp,decay,bright,rev){
   if(!rdy())return;
   const o=_AC.createOscillator(),o2=_AC.createOscillator(),g=_AC.createGain(),f=_AC.createBiquadFilter();
   o.type='sine';o2.type='triangle';o.frequency.value=freq;o2.frequency.value=freq*2.003;
-  f.type='lowpass';f.frequency.value=600+bright*2200;f.Q.value=.5;
-  const g2=_AC.createGain();g2.gain.value=.22+bright*.18;
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+decay);
+  f.type='lowpass';f.frequency.value=380+bright*500;f.Q.value=.3;
+  const g2=_AC.createGain();g2.gain.value=.08+bright*.06;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+.45);g.gain.exponentialRampToValueAtTime(.0001,t+decay);
   o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);
   let out=g;if(_AC.createStereoPanner){const p=_AC.createStereoPanner();p.pan.value=(Math.random()*2-1)*.7;g.connect(p);out=p;}
   if(rev)try{out.connect(rev);}catch(e){}out.connect(_MG);
@@ -87,17 +87,15 @@ function addLife(n,nd){
     if(Math.random()<LIFE_PROB[i]){
       let k;do{k=Math.floor(Math.random()*scale.length);}while(k===last&&scale.length>1);last=k;
       const oct=octs[Math.floor(Math.random()*octs.length)];
-      const amp=.028+bright*.026+Math.random()*.012;
-      lifePluck(R[i]*scale[k]*oct,t,amp,1.4+(1-bright)*1.6,bright,rev);
-      // brighter dials sometimes ornament with a quick echo-note a step up the scale
-      if(n>=7&&Math.random()<.35)lifePluck(R[i]*scale[(k+1)%scale.length]*oct,t+step*.5,amp*.6,1.2,bright,rev);
+      const amp=.016+bright*.008+Math.random()*.006;
+      lifePluck(R[i]*scale[k]*oct,t,amp,4.5+(1-bright)*2,bright,rev);   // one soft, slow-blooming note
     }
     count++;next=t+step;
     setTimeout(tick,Math.max(120,(next-now())*1000-250));
   }
   tick();
   // moving air: a breath of noise whose brightness and speed follow the dial
-  breathNoise(500+i*170,.010+bright*.012,.04+bright*.05,nd,rev);
+  breathNoise(300+i*50,.008+bright*.005,.025+bright*.02,nd,rev);
   nd.push({stop:()=>{stopped=true;try{if(rev)rev.disconnect();}catch(e){}}});
 }
 // Memo soundscapes — memory treatment: tape warble, slow attack, long reverb
@@ -124,7 +122,7 @@ function stopSnd(f=1.8){if(!rdy())return;_MG.gain.cancelScheduledValues(now());_
 function startSnd(n,vol=0.68){
   if(!getAC()||!rdy())return;
   const tok=++sndTok;
-  const go=()=>{if(tok!==sndTok)return;if(sndDial===n){if(!isMuted&&_MG)_MG.gain.setTargetAtTime(vol,now(),.9);return;}const had=sndNodes.length>0;if(had)stopSnd(2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+3.5);sndNodes=nd;sndDial=n;},had?1400:80);};
+  const go=()=>{if(tok!==sndTok)return;if(sndDial===n){if(!isMuted&&_MG)_MG.gain.setTargetAtTime(vol,now(),.9);return;}const had=sndNodes.length>0;if(had)stopSnd(2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+5);sndNodes=nd;sndDial=n;},had?1400:80);};
   if(_AC.state==='suspended')_AC.resume().then(go).catch(()=>{});else go();
 }
 

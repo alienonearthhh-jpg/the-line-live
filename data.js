@@ -14,8 +14,8 @@ const LD={
   9:{w:'bright',     tags:['joyful','alive','full'],          col:'#E8764A',leak:{r:240,g:70,b:30},  leakName:'coral red — joyful, vibrant'},
 };
 const QUAD={1:'low valence, high arousal',2:'low valence, medium arousal',3:'low valence, low arousal',4:'low–mid valence, low arousal',5:'neutral centre',6:'mid-positive valence',7:'positive valence, medium arousal',8:'positive valence, medium–high arousal',9:'high valence, high arousal'};
-const HOLE_COLS=['#7A7570','#A09890','#B0A898','#8FA08A','#7A9A82','#C49AB0','#D4B870','#E0905A','#C85A40'];
-const BPM=[50,55,60,65,70,76,82,88,96];
+const HOLE_COLS=[1,2,3,4,5,6,7,8,9].map(n=>LD[n].col);   // dial holes use the exact same colours as everything else
+const BPM=[40,43,46,49,52,55,58,61,64];   // calm: all slow, rising gently
 const BTDEVS=[{id:'bt1',name:'AirPods Pro',type:'earbuds'},{id:'bt2',name:'Sony WH-1000XM5',type:'headphones'},{id:'bt3',name:'Bose QC45',type:'headphones'}];
 const DEMO_MEMOS=[
   {n:5,date:'May 3, 2026',note:'"a simple day, but a good one."',blended:'#C2B89A',gradHex:['#C2B89A','#A8C4A2'],blobs:[{emotion:'neutral',hex:'#C4B89A',weight:.6},{emotion:'content',hex:'#A0C098',weight:.4}]},
