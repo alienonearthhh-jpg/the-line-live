@@ -138,7 +138,7 @@ function startVoice(){
       ta.value=(recBase+fin+interim).replace(/\s{2,}/g,' ');ta.scrollTop=ta.scrollHeight;ta.dispatchEvent(new Event('input'));};
     r.onerror=e=>{
       if(e.error==='not-allowed'||e.error==='service-not-allowed'){recWant=false;recState='idle';recUI('idle','microphone is blocked · allow it in your browser settings, or type');}
-      else if(e.error==='network'){recWant=false;recState='idle';recUI('idle','voice typing needs an internet connection');}
+      else if(e.error==='network'){recWant=false;recState='idle';recUI('idle',"voice typing doesn't work in this browser · try Chrome or Safari, or type");}
     };
     r.onend=()=>{if(recWant&&recog===r){try{begin();}catch(x){recWant=false;recState='idle';recUI('done','voice captured');}}};   // browsers stop after a pause: keep listening
     try{r.start();}catch(e){recWant=false;recState='idle';recUI('idle','could not start the microphone');}
