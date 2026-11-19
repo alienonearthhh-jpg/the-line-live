@@ -3,7 +3,22 @@
 // AUDIO ENGINE
 // ═══════════════════════════════════════
 let _AC=null,_MG=null,sndNodes=[],sndDial=null,isMuted=false,sndTok=0;
-function getAC(){if(_AC)return _AC;try{_AC=new(window.AudioContext||window.webkitAudioContext)();_MG=_AC.createGain();_MG.gain.value=0;const lp=_AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=.4;_MG.connect(lp);lp.connect(_AC.destination);}catch(e){_AC=null;_MG=null;}return _AC;}
+// iPhone: the silent-mode switch mutes Web Audio unless the page is on the "playback" audio channel.
+let _sil=null;
+function unlockIOS(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
+  try{
+    if(!_sil){
+      const sr=8000,n=sr/2,b=new Uint8Array(44+n),dv=new DataView(b.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i);};
+      w(0,'RIFF');dv.setUint32(4,36+n,true);w(8,'WAVEfmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);dv.setUint32(24,sr,true);dv.setUint32(28,sr,true);dv.setUint16(32,1,true);dv.setUint16(34,8,true);w(36,'data');dv.setUint32(40,n,true);b.fill(128,44);
+      _sil=new Audio(URL.createObjectURL(new Blob([b],{type:'audio/wav'})));_sil.loop=true;_sil.setAttribute('playsinline','');_sil.volume=.01;
+    }
+    const p=_sil.play();if(p&&p.catch)p.catch(()=>{});
+  }catch(e){}
+}
+['touchend','click'].forEach(ev=>window.addEventListener(ev,()=>{unlockIOS();if(_AC&&_AC.state==='suspended')_AC.resume().catch(()=>{});},{passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&_AC&&_AC.state!=='running')_AC.resume().catch(()=>{});});
+function getAC(){if(_AC)return _AC;unlockIOS();try{_AC=new(window.AudioContext||window.webkitAudioContext)();_MG=_AC.createGain();_MG.gain.value=0;const lp=_AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=.4;_MG.connect(lp);lp.connect(_AC.destination);}catch(e){_AC=null;_MG=null;}return _AC;}
 function rdy(){return _AC&&_MG&&_AC.state!=='closed';}
 function now(){return _AC?_AC.currentTime:0;}
 function mkRev(dur,dec){if(!rdy())return null;const len=_AC.sampleRate*dur,buf=_AC.createBuffer(2,len,_AC.sampleRate);for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,dec);}const cv=_AC.createConvolver();cv.buffer=buf;return cv;}

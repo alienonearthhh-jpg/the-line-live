@@ -264,3 +264,15 @@ html,body{overscroll-behavior:none;}
 
 /* inactive screens must never catch taps (echo hit-layer sets pointer-events:all itself) */
 .screen:not(.active),.screen:not(.active) *{pointer-events:none !important;}
+
+/* Echo: calmer, cleaner type + buttons clear of the nav */
+.s4-body{padding:0 24px calc(72px + var(--sab) + 16px);}
+.alone-h{font-size:24px;line-height:1.35;margin-bottom:8px;}
+.alone-sub{font-size:12px;letter-spacing:.02em;margin-bottom:6px;}
+.alone-hint{margin-bottom:14px;}
+.s4-btns{flex-direction:row;gap:10px;}
+.s4-btn{flex:1;height:46px;}
+#echo-intro{gap:9px;padding:20px 22px 16px;text-align:left;}
+#echo-intro .ei-h{margin-bottom:4px;}
+#echo-intro .ei-p{font-size:14px;line-height:1.5;}
+@media (max-height:760px){.alone-sub{display:block;}.alone-h{font-size:22px;}}
