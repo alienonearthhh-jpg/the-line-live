@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════
 function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id)?.classList.add('active');}
 function setNav(id){['ni-line','ni-echo','ni-memo'].forEach(b=>document.getElementById(b)?.classList.remove('active'));if(id)document.getElementById(id)?.classList.add('active');  document.getElementById('nav')?.classList.remove('nav-dark');}
-function navTo(d){if(d==='line'){goTo('s1');setNav('ni-line');pausePlayer();}else if(d==='echo'){goTo('s4');setNav('ni-echo');pausePlayer();startEcho();setTimeout(()=>['alone-h','alone-sub','alone-hint'].forEach(x=>document.getElementById(x)?.classList.add('show')),200);}else if(d==='memo'){pausePlayer();stopSnd(1.5);buildMemoList();goTo('s5');setNav('ni-memo');}}
+function navTo(d){if(d==='line'){resetDial();goTo('s1');setNav('ni-line');pausePlayer();}else if(d==='echo'){goTo('s4');setNav('ni-echo');pausePlayer();startEcho();setTimeout(()=>['alone-h','alone-sub','alone-hint'].forEach(x=>document.getElementById(x)?.classList.add('show')),200);}else if(d==='memo'){pausePlayer();stopSnd(1.5);buildMemoList();goTo('s5');setNav('ni-memo');}}
 function goS2(){
   if(!selFreq)return;const d=LD[selFreq],hex=d.col;
   const ll=document.getElementById('s2-lnum');if(ll){ll.textContent=`line ${selFreq}`;ll.style.color=hex;}

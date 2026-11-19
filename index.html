@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#EDEAE4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Line">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
 <title>The Line</title>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -120,14 +125,11 @@
           <p class="ei-p">Only colour and sound are shared. Never words.</p>
           <button class="ei-btn" onclick="closeEchoIntro()">Got it</button>
         </div>
-        <div id="listen-ov">
-          <canvas id="listen-ov-cv"></canvas>
-          <div class="listen-inner">
-            <p class="l-who" id="l-who"></p>
-            <div class="l-play" id="l-play"><svg id="lp-play" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg><svg id="lp-pause" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.7)" stroke-width="1.8" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
-            <canvas id="l-wave" width="200" height="32" style="width:180px;height:32px;display:block"></canvas>
-            <p class="l-exit" id="l-exit">tap anywhere to close</p>
-          </div>
+        <div id="echo-now">
+          <span class="en-dot" id="en-dot"></span>
+          <div class="en-txt"><span class="en-who" id="en-who"></span><span class="en-sub" id="en-sub"></span></div>
+          <canvas id="en-wave" width="90" height="24"></canvas>
+          <button class="en-play" id="en-play" aria-label="Play or pause"><svg id="en-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(61,56,48,0.75)" stroke-width="1.8"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
         </div>
         <div class="s4-body">
           <h2 class="alone-h" id="alone-h">you are<br>not alone</h2>
@@ -165,7 +167,7 @@
               <div class="tt-arm" id="tt-arm"><div class="tt-arm-piv"></div><div class="tt-arm-bar"></div><div class="tt-arm-tip"></div></div>
             </div>
           </div>
-          <div class="bt-panel" id="bt-panel"><div class="bt-pi"><div class="bt-scan" id="bt-scan"><div class="bt-sd"></div><div class="bt-sd"></div><div class="bt-sd"></div><span class="bt-st">scanning…</span></div><div class="bt-devs" id="bt-devs"></div></div></div>
+          <div class="bt-panel" id="bt-panel"><div class="bt-pi"><div class="bt-scan" id="bt-scan"><div class="bt-sd"></div><div class="bt-sd"></div><div class="bt-sd"></div><span class="bt-st">scanning…</span></div><div class="bt-devs" id="bt-devs"></div><button class="bt-done" id="bt-done" onclick="closeBt()">Done</button></div></div>
           <p class="p-date" id="p-date">—</p><p class="p-word" id="p-word">—</p><p class="p-note" id="p-note"></p>
           <div class="p-strip" id="p-strip"></div><p class="p-hex" id="p-hex"></p>
           <div class="p-tags" id="p-tags"></div>

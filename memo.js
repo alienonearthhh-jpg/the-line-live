@@ -41,8 +41,28 @@ function nextTrack(){pausePlayer();curTrack=(curTrack+1)%memoData.length;loadTra
 // ═══════════════════════════════════════
 // BLUETOOTH
 // ═══════════════════════════════════════
-let btOn=false,btPaired=null,btScanT=null,btCTs={};
-function toggleBt(){btOn=!btOn;const pill=document.getElementById('bt-pill'),scan=document.getElementById('bt-scan'),devs=document.getElementById('bt-devs'),txt=document.getElementById('bt-txt'),panel=document.getElementById('bt-panel');if(btOn){pill.classList.add('on');if(txt)txt.textContent='scanning…';panel.classList.add('open');if(scan)scan.style.display='flex';if(devs)devs.innerHTML='';clearTimeout(btScanT);btScanT=setTimeout(()=>{if(scan)scan.style.display='none';if(txt)txt.textContent=btPaired?BTDEVS.find(d=>d.id===btPaired)?.name:'bluetooth';renderBtDevs();},2000);}else{pill.classList.remove('on');if(txt)txt.textContent='bluetooth';panel.classList.remove('open');clearTimeout(btScanT);Object.values(btCTs).forEach(clearTimeout);btCTs={};btPaired=null;if(devs)devs.innerHTML='';}}
-function renderBtDevs(){const devs=document.getElementById('bt-devs');if(!devs)return;devs.innerHTML='';BTDEVS.forEach(dev=>{const p=btPaired===dev.id;const row=document.createElement('div');row.className='bt-dev'+(p?' paired':'');row.innerHTML=`<div><div class="bt-dn">${dev.name}</div><div class="bt-dt">${dev.type}</div></div><button class="bt-cb ${p?'paired':''}" onclick="btConn('${dev.id}')">${p?'connected':'connect'}</button>`;devs.appendChild(row);});}
-function btConn(id){if(btPaired===id){btPaired=null;const t=document.getElementById('bt-txt');if(t)t.textContent='bluetooth';renderBtDevs();return;}clearTimeout(btCTs[id]);btCTs[id]=setTimeout(()=>{btPaired=id;const t=document.getElementById('bt-txt');if(t)t.textContent=BTDEVS.find(d=>d.id===id)?.name;renderBtDevs();},1400);}
+let btOpen=false,btPaired=null,btScanT=null,btCTs={},btPending=null;
+function btLabel(){const pill=document.getElementById('bt-pill'),txt=document.getElementById('bt-txt');if(!pill||!txt)return;
+  const dev=btPaired?BTDEVS.find(d=>d.id===btPaired):null;
+  txt.textContent=btOpen&&!dev&&document.getElementById('bt-scan').style.display==='flex'?'scanning…':(dev?dev.name:'bluetooth');
+  pill.classList.toggle('on',!!dev||btOpen);}
+// Opening / closing the panel never changes the connection. Disconnect = tap "connected" on the device.
+function openBt(){
+  btOpen=true;const scan=document.getElementById('bt-scan'),devs=document.getElementById('bt-devs');
+  document.getElementById('bt-panel').classList.add('open');clearTimeout(btScanT);
+  if(btPaired){if(scan)scan.style.display='none';renderBtDevs();}                 // already connected: show the list straight away
+  else{if(scan)scan.style.display='flex';if(devs)devs.innerHTML='';btScanT=setTimeout(()=>{if(scan)scan.style.display='none';renderBtDevs();btLabel();},2000);}
+  btLabel();
+}
+function closeBt(){
+  btOpen=false;clearTimeout(btScanT);const scan=document.getElementById('bt-scan');if(scan)scan.style.display='none';
+  document.getElementById('bt-panel').classList.remove('open');btLabel();
+}
+function toggleBt(){btOpen?closeBt():openBt();}
+function renderBtDevs(){const devs=document.getElementById('bt-devs');if(!devs)return;devs.innerHTML='';BTDEVS.forEach(dev=>{const p=btPaired===dev.id,c=btPending===dev.id;const row=document.createElement('div');row.className='bt-dev'+(p?' paired':'');row.innerHTML=`<div><div class="bt-dn">${dev.name}</div><div class="bt-dt">${dev.type}</div></div><button class="bt-cb ${p?'paired':''}" onclick="btConn('${dev.id}')">${p?'connected':c?'connecting…':'connect'}</button>`;devs.appendChild(row);});}
+function btConn(id){
+  if(btPaired===id){btPaired=null;renderBtDevs();btLabel();return;}                // tap "connected" = disconnect
+  clearTimeout(btCTs[id]);btPending=id;renderBtDevs();
+  btCTs[id]=setTimeout(()=>{btPaired=id;btPending=null;renderBtDevs();btLabel();},1400);
+}
 

@@ -137,15 +137,8 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--text
 .ei-p{font-size:13px;line-height:1.5;color:rgba(61,56,48,.78);}
 .ei-p b{font-weight:600;color:var(--text);}
 .ei-btn{align-self:flex-end;margin-top:6px;padding:8px 18px;border-radius:100px;border:none;background:var(--text);color:#fff;font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;}
-.l-who{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(61,56,48,.45);}
-button:focus,.l-play:focus{outline:none;}
+button:focus{outline:none;}
 button:focus-visible{outline:2px solid rgba(61,56,48,.3);outline-offset:2px;border-radius:8px;}
-#listen-ov{display:none;position:absolute;inset:0;z-index:40;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .6s;}
-#listen-ov.show{display:flex;opacity:1;}
-#listen-ov-cv{position:absolute;inset:0;}
-.listen-inner{position:relative;z-index:2;text-align:center;padding:0 40px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.l-play{width:64px;height:64px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.l-exit{font-size:10px;color:rgba(61,56,48,0.3);cursor:pointer;letter-spacing:.06em;}
 /* S5 Memo */
 #s5{background:var(--bg);}
 #s5 .hd{flex-shrink:0;}
@@ -188,7 +181,8 @@ button:focus-visible{outline:2px solid rgba(61,56,48,.3);outline-offset:2px;bord
 .tt-arm-piv{position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0d0c0,#8a7a70);border:1px solid rgba(0,0,0,.2);}
 .tt-arm-tip{position:absolute;bottom:-3px;left:50%;transform:translateX(-60%) rotate(8deg);width:9px;height:5px;border-radius:2px;background:linear-gradient(to right,#b0a090,#7a6a60);}
 .bt-panel{width:100%;background:rgba(255,255,255,.52);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-height:0;opacity:0;transition:max-height .45s,opacity .45s;margin-bottom:6px;}
-.bt-panel.open{max-height:280px;opacity:1;}
+.bt-panel.open{max-height:340px;opacity:1;}
+.bt-done{display:block;margin:8px 0 0 auto;padding:7px 18px;border-radius:100px;border:none;background:var(--text);color:#fff;font-family:var(--f);font-size:11px;font-weight:500;cursor:pointer;}
 .bt-pi{padding:10px 12px;}
 .bt-scan{display:none;align-items:center;gap:6px;height:18px;margin-bottom:8px;}
 .bt-sd{display:inline-block;width:3px;height:3px;border-radius:50%;background:#8A9E7E;animation:dots 1.4s ease-in-out infinite;}
@@ -250,3 +244,23 @@ button:focus-visible{outline:2px solid rgba(61,56,48,.3);outline-offset:2px;bord
 .res-btn.outline{background:transparent;color:var(--text);border:1.5px solid rgba(0,0,0,0.15);}
 .res-btn.emergency{background:var(--accent);}
 .res-emergency{border:1.5px dashed rgba(196,97,74,0.4);background:rgba(196,97,74,0.04);}
+
+/* Echo now-playing pill */
+#echo-now{position:absolute;left:20px;right:20px;top:calc(104px + var(--sat));z-index:20;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:20px;background:rgba(255,255,255,.7);border:1px solid rgba(61,56,48,.07);box-shadow:0 8px 24px rgba(61,56,48,.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .45s ease,transform .45s ease;}
+#echo-now.on{opacity:1;transform:none;pointer-events:auto;}
+.en-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;transition:background .6s ease;}
+.en-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+.en-who{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:rgba(61,56,48,.6);white-space:nowrap;}
+.en-sub{font-size:11px;color:rgba(61,56,48,.38);}
+#en-wave{width:54px;height:24px;flex-shrink:0;}
+.en-play{width:40px;height:40px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+@media (max-width:360px){#en-wave{display:none;}}
+@media (max-height:760px){.alone-sub{display:none;}}
+/* App feel when installed / on touch: no text-select or callout on UI chrome */
+button,.nav,.screen{-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
+button,.nav,canvas{-webkit-user-select:none;user-select:none;}
+textarea,input{-webkit-user-select:text;user-select:text;}
+html,body{overscroll-behavior:none;}
+
+/* inactive screens must never catch taps (echo hit-layer sets pointer-events:all itself) */
+.screen:not(.active),.screen:not(.active) *{pointer-events:none !important;}

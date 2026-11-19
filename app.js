@@ -3,8 +3,8 @@
 // WIRE UP
 // ═══════════════════════════════════════
 document.getElementById('call-btn').addEventListener('click',goS2);
-document.getElementById('s2-back-btn').addEventListener('click',()=>{goTo('s1');setNav('ni-line');});
-document.getElementById('s2-x-btn').addEventListener('click',()=>{goTo('s1');setNav('ni-line');});
+document.getElementById('s2-back-btn').addEventListener('click',()=>{resetDial();goTo('s1');setNav('ni-line');});
+document.getElementById('s2-x-btn').addEventListener('click',()=>{resetDial();goTo('s1');setNav('ni-line');});
 document.getElementById('s2-save').addEventListener('click',goS3);
 document.getElementById('s2-play-btn').addEventListener('click',toggleS2Sound);
 document.getElementById('rec-btn').addEventListener('click',toggleRec);
@@ -14,16 +14,13 @@ document.getElementById('s3-play-btn').addEventListener('click',toggleS3Sound);
 document.getElementById('s3-receipt').addEventListener('click',downloadReceipt);
 document.getElementById('s3-download').addEventListener('click',downloadCard);
 document.getElementById('s4-memo-btn').addEventListener('click',()=>{pausePlayer();stopSnd(1.5);buildMemoList();goTo('s5');setNav('ni-memo');});
-document.getElementById('s4-dial-btn').addEventListener('click',()=>{goTo('s1');setNav('ni-line');});
+document.getElementById('s4-dial-btn').addEventListener('click',()=>navTo('line'));
 document.getElementById('s6-back-btn').addEventListener('click',()=>{pausePlayer();buildMemoList();goTo('s5');setNav('ni-memo');});
 document.getElementById('play-btn').addEventListener('click',()=>isPlay?pausePlayer():startPlay());
 document.getElementById('prev-btn').addEventListener('click',prevTrack);
 document.getElementById('next-btn').addEventListener('click',nextTrack);
 document.getElementById('prog-track').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();progS=Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*TDUR);updProg();});
 document.getElementById('bt-pill').addEventListener('click',toggleBt);
-document.getElementById('listen-ov').addEventListener('click',e=>{if(Date.now()-lOpenedAt<600)return;if(e.target===e.currentTarget||e.target.id==='listen-ov-cv')closeListen();});
-document.getElementById('l-exit').addEventListener('click',closeListen);
-document.getElementById('l-play').addEventListener('click',toggleLPlay);
 
 // ═══════════════════════════════════════
 // SUPPORT SHEET
@@ -55,3 +52,7 @@ function muteIconOn(){return`<svg width="16" height="16" viewBox="0 0 24 24" fil
 function muteIconOff(){return`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;}
 function toggleMute(){isMuted=!isMuted;if(rdy()){_MG.gain.cancelScheduledValues(now());if(isMuted)_MG.gain.linearRampToValueAtTime(0,now()+.4);else _MG.gain.linearRampToValueAtTime(.68,now()+.4);}const btn=document.getElementById('mute-btn');if(btn)btn.innerHTML=isMuted?muteIconOff():muteIconOn();}
 const mb=document.getElementById('mute-btn');if(mb){mb.innerHTML=muteIconOn();mb.addEventListener('click',toggleMute);}
+
+document.getElementById('en-play').addEventListener('click',toggleEchoPlay);
+// Installable app: register the service worker (http/https only)
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}

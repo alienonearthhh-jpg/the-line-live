@@ -43,3 +43,21 @@ window.addEventListener('touchmove',e=>{if(!isDrag)return;didDrag=true;dialRot=d
 function snapDial(){if(!isDrag)return;isDrag=false;if(!didDrag)return;const n=nearest();if(n<1)return;const d=(((-Math.PI/2-holeAngle(n))-dialRot+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;animTo(dialRot+d*.98);}
 window.addEventListener('mouseup',snapDial);window.addEventListener('touchend',snapDial);
 
+
+// ── Reset: every return to the Dial starts fresh (no refresh needed) ──
+function resetDial(){
+  selFreq=0;dialRot=0;isDrag=false;didDrag=false;drawDial();
+  const hub=document.getElementById('hub-num');if(hub){hub.textContent='?';hub.classList.remove('lit');hub.style.color='';}
+  const hw=document.getElementById('hub-word');if(hw){hw.textContent='—';hw.classList.remove('lit');}
+  const fw=document.getElementById('freq-word');if(fw){fw.textContent='';fw.classList.remove('show');fw.style.color='';}
+  const ft=document.getElementById('freq-tags');if(ft)ft.innerHTML='';
+  const btn=document.getElementById('call-btn');if(btn){btn.disabled=true;btn.textContent='—';btn.style.backgroundColor='rgba(0,0,0,0.07)';btn.style.color='var(--muted)';}
+  stopSnd(.8);
+  // journal / result state
+  try{stopVoice(true);}catch(e){}
+  s2SndOn=false;s3On=false;soundUserOff=false;barOn=false;liveDial=null;liveKey='';lastColour=null;clearTimeout(sndT);
+  const ta=document.getElementById('s2-ta');if(ta)ta.value='';
+  try{stopBars('s2-bars');}catch(e){}
+  // echo selection
+  try{if(echoSel)echoSelect(null);echoJust=null;}catch(e){}
+}

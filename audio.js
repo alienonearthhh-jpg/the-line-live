@@ -119,10 +119,10 @@ const MEMO_SCAPES={
 };
 function stopSnd(f=1.8){if(!rdy())return;_MG.gain.cancelScheduledValues(now());_MG.gain.setTargetAtTime(0,now(),f*.28);const ns=[...sndNodes];sndNodes=[];sndDial=null;setTimeout(()=>ns.forEach(n=>{try{if(typeof n.stop==='function')n.stop();}catch(e){}}),f*1000+400);}
 // sndTok: only the most recent startSnd call is allowed to actually start sound, so rapid dial/keyword changes never stack layers
-function startSnd(n,vol=0.68){
+function startSnd(n,vol=0.68,fast=false){
   if(!getAC()||!rdy())return;
   const tok=++sndTok;
-  const go=()=>{if(tok!==sndTok)return;if(sndDial===n){if(!isMuted&&_MG)_MG.gain.setTargetAtTime(vol,now(),.9);return;}const had=sndNodes.length>0;if(had)stopSnd(2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+5);sndNodes=nd;sndDial=n;},had?1400:80);};
+  const go=()=>{if(tok!==sndTok)return;if(sndDial===n){if(!isMuted&&_MG)_MG.gain.setTargetAtTime(vol,now(),.9);return;}const had=sndNodes.length>0;if(had)stopSnd(fast?1.0:2.0);setTimeout(()=>{if(tok!==sndTok||!rdy())return;const nd=[];try{(SCAPES[n]||SCAPES[5])(nd);addLife(SCAPES[n]?n:5,nd);}catch(e){return;}_MG.gain.cancelScheduledValues(now());_MG.gain.setValueAtTime(0,now());if(!isMuted)_MG.gain.linearRampToValueAtTime(vol,now()+(fast?2.2:5));sndNodes=nd;sndDial=n;},had?(fast?500:1400):80);};
   if(_AC.state==='suspended')_AC.resume().then(go).catch(()=>{});else go();
 }
 

@@ -35,3 +35,12 @@ Then open a Pull Request on GitHub. Vercel makes a preview link for every branch
 
 ## Making Echo shared across phones (next step)
 Echo currently shows this device's saved moments plus a seeded crowd. To share between visitors, set `EchoStore.remote` in `echo.js` to an object with `list()` and `add()` backed by a database (e.g. Supabase). Send only `{n, hex, word, ts}` — never the written text.
+
+
+## Install as an app (PWA)
+The Line is installable — opens full-screen with no URL bar, like a native app.
+- **iPhone (Safari):** open the link → Share → **Add to Home Screen**
+- **Android (Chrome):** ⋮ menu → **Install app** / **Add to Home Screen**
+
+Files: `manifest.json`, `sw.js` (network-first, offline fallback), `icons/`.
+After a deploy, the app picks up changes the next time it opens online. If you change the file list, bump `CACHE` in `sw.js`.
